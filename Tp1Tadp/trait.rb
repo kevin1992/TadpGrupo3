@@ -6,27 +6,7 @@ class Trait
 
     nuevoTrait = Object.const_set(nombre,TraitOperador.new)
 
-
-    class << nuevoTrait
-
-      @@metodosAgregados = []
-
-      def agregarMethod(nombre, &bloque)
-        self.class.instance_eval do
-          define_method(nombre) {bloque.yield}
-          @@metodosAgregados.push (nombre)
-        end
-      end
-
-      def metodosAgregados
-        @@metodosAgregados
-      end
-
-    end
-
-
     nuevoTrait.instance_eval(&bloqueMetodos)
-
 
 
   end
@@ -36,6 +16,46 @@ end
 
 
 class TraitOperador
+
+  attr_accessor :metodosAgregados
+
+  def initialize()
+    self.metodosAgregados = []
+  end
+
+  def agregarMethod(nombre, &bloque)
+   define_singleton_method nombre , lambda {bloque.yield}
+   self.metodosAgregados.push(nombre)
+  end
+
+
+  def + (otroTrait)
+
+    nuevoTrait = TraitOperador.new;
+
+    this = self
+
+   self.metodosAgregados.each {|nombreMetodo|
+     nuevoTrait.define_singleton_method(nombreMetodo)  {this.method(nombreMetodo).call}
+   nuevoTrait.metodosAgregados.push(nombreMetodo)
+   }
+
+    otroTrait.metodosAgregados.each {|nombreMetodo|
+
+      if (nuevoTrait.metodosAgregados.include? nombreMetodo)
+        nuevoTrait.define_singleton_method(nombreMetodo)  {throw Exception.new("Conflicto del metodo #{nombreMetodo} ") }
+      else
+        nuevoTrait.define_singleton_method(nombreMetodo)  {otroTrait.method(nombreMetodo).call}
+      nuevoTrait.metodosAgregados.push(nombreMetodo)
+      end
+
+    }
+
+    nuevoTrait
+
+  end
+
+
 
 end
 
@@ -72,13 +92,45 @@ Trait.define('MiTrait') do
 end
 
 
-class Persona
-  uses MiTrait
+Trait.define('OtroTrait') do
+
+  agregarMethod :saltar do
+    puts "SALTO!"
+  end
+
+  agregarMethod :saludar do
+    puts "aosoapskdoo!"
+  end
+
+
 
 end
 
 
+Trait.define('TercerTrait') do
+
+  agregarMethod :comer do
+    puts "Como!"
+  end
+
+  agregarMethod :saludar do
+    puts "aosoapskdoo!"
+  end
+
+
+
+end
+
+
+class Persona
+
+  uses (MiTrait.+ OtroTrait)
+
+end
+
 p = Persona.new
 
-p.saludar()
+
+
 p.sumar()
+p.saludar()
