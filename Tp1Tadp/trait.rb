@@ -43,13 +43,10 @@ end
 
 class Object
 
-  def uses trait, lista=nil
+  def uses trait, lista=trait.metodosAgregados
 
-    if lista == nil
-      lista=trait.metodosAgregados
-  else
+
     lista = lista.select {|elem| trait.metodosAgregados.include? elem }
-  end
 
     lista.each {|nombreMetodo| define_method(nombreMetodo)  {trait.method(nombreMetodo).call}}
 
