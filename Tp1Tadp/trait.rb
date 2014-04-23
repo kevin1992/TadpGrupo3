@@ -6,6 +6,9 @@ class Trait
 
     nuevoTrait = Object.const_set(nombre,TraitOperador.new)
 
+
+
+
     nuevoTrait.instance_eval(&bloqueMetodos)
 
 
@@ -28,6 +31,19 @@ class TraitOperador
    self.metodosAgregados.push(nombre)
   end
 
+
+  def - (*metodos)
+
+    nuevoTrait = self.clone
+
+    metodos.each {|metodo| nuevoTrait.singleton_class.send(:remove_method, metodo)
+    nuevoTrait.metodosAgregados.delete(metodo)
+    }
+
+    nuevoTrait
+
+
+  end
 
   def + (otroTrait)
 
@@ -98,10 +114,10 @@ Trait.define('OtroTrait') do
     puts "SALTO!"
   end
 
-  agregarMethod :saludar do
-    puts "aosoapskdoo!"
-  end
 
+  agregarMethod :saludar do
+    puts "sdfsdfdsdsfdsfsd!"
+  end
 
 
 end
@@ -124,7 +140,7 @@ end
 
 class Persona
 
-  uses (MiTrait.+ OtroTrait)
+  uses (MiTrait + (OtroTrait- :saludar))
 
 end
 
@@ -134,3 +150,4 @@ p = Persona.new
 
 p.sumar()
 p.saludar()
+p.saltar()
