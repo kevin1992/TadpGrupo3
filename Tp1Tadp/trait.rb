@@ -1,7 +1,7 @@
 
 class Trait
 
-  attr_accessor :metodosAgregados
+  attr_accessor :metodosAgregados , :estrategia
 
   def initialize()
     self.metodosAgregados = []
@@ -55,6 +55,7 @@ class Trait
   def + (otroTrait)
 
     nuevoTrait = Trait.new;
+    nuevoTrait.estrategia = self.estrategia
 
     this = self
 
@@ -65,7 +66,7 @@ class Trait
     otroTrait.metodosAgregados.each {|nombreMetodo|
 
       if (nuevoTrait.metodosAgregados.include? nombreMetodo)
-        nuevoTrait.define_singleton_method(nombreMetodo)  {throw Exception.new("Conflicto del metodo #{nombreMetodo} ") }
+        nuevoTrait.define_singleton_method(nombreMetodo)  {|*args| nuevoTrait.estrategia.method(:resolver).call(this,otroTrait,nombreMetodo,*args) }
       else
         self.copiarMetodo nombreMetodo, nuevoTrait, otroTrait
       end
