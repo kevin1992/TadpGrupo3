@@ -1,24 +1,5 @@
-#TODO hacer que se banque metodos con parametros
 
 class Trait
-
-  def self.define(nombre,&bloqueMetodos)
-
-    nuevoTrait = Object.const_set(nombre,TraitOperador.new)
-
-
-
-
-    nuevoTrait.instance_eval(&bloqueMetodos)
-
-
-  end
-
-end
-
-
-
-class TraitOperador
 
   attr_accessor :metodosAgregados
 
@@ -27,17 +8,22 @@ class TraitOperador
   end
 
   def agregarMethod(nombre, &bloque)
-   define_singleton_method nombre , lambda {bloque.yield}
+   define_singleton_method (nombre) do |*args| bloque.call(*args) end
    self.metodosAgregados.push(nombre)
   end
 
+  def agregarMetodos (&bloque)
+
+    instance_eval &bloque
+
+  end
 
   def - (*metodos)
 
     nuevoTrait = self.clone
 
-    metodos.each {|metodo| nuevoTrait.singleton_class.send(:remove_method, metodo)
-    nuevoTrait.metodosAgregados.delete(metodo)
+    metodos.each {|metodo|
+      borrarMetodo(metodo,nuevoTrait)
     }
 
     nuevoTrait
@@ -45,15 +31,35 @@ class TraitOperador
 
   end
 
+
+  def << metodoOriginal,nuevoNombreMetodo
+
+    agregarMethod(nuevoNombreMetodo) {|*args| method(metodoOriginal).call(*args)}
+
+    self
+
+  end
+
+
+  def borrarMetodo nombreMetodo, trait
+    trait.singleton_class.send(:remove_method, nombreMetodo)
+    trait.metodosAgregados.delete(nombreMetodo)
+  end
+
+  def copiarMetodo nombreMetodo , traitAlQueCopio , traitQueTieneElMetodo
+    traitAlQueCopio.define_singleton_method(nombreMetodo)  {|*args| traitQueTieneElMetodo.method(nombreMetodo).call(*args)}
+    traitAlQueCopio.metodosAgregados.push(nombreMetodo)
+  end
+
+
   def + (otroTrait)
 
-    nuevoTrait = TraitOperador.new;
+    nuevoTrait = Trait.new;
 
     this = self
 
    self.metodosAgregados.each {|nombreMetodo|
-     nuevoTrait.define_singleton_method(nombreMetodo)  {this.method(nombreMetodo).call}
-   nuevoTrait.metodosAgregados.push(nombreMetodo)
+     self.copiarMetodo nombreMetodo, nuevoTrait, this
    }
 
     otroTrait.metodosAgregados.each {|nombreMetodo|
@@ -61,8 +67,7 @@ class TraitOperador
       if (nuevoTrait.metodosAgregados.include? nombreMetodo)
         nuevoTrait.define_singleton_method(nombreMetodo)  {throw Exception.new("Conflicto del metodo #{nombreMetodo} ") }
       else
-        nuevoTrait.define_singleton_method(nombreMetodo)  {otroTrait.method(nombreMetodo).call}
-      nuevoTrait.metodosAgregados.push(nombreMetodo)
+        self.copiarMetodo nombreMetodo, nuevoTrait, otroTrait
       end
 
     }
@@ -76,78 +81,3 @@ class TraitOperador
 end
 
 
-
-class Object
-
-  def uses trait, lista=trait.metodosAgregados
-
-
-    lista = lista.select {|elem| trait.metodosAgregados.include? elem }
-
-    lista.each {|nombreMetodo| define_method(nombreMetodo)  {trait.method(nombreMetodo).call}}
-
-  end
-
-
-end
-
-
-
-
-Trait.define('MiTrait') do
-
-  agregarMethod :saludar do
-        puts "Hola!"
-  end
-
-  agregarMethod :sumar do
-    puts "5"
-  end
-
-
-end
-
-
-Trait.define('OtroTrait') do
-
-  agregarMethod :saltar do
-    puts "SALTO!"
-  end
-
-
-  agregarMethod :saludar do
-    puts "sdfsdfdsdsfdsfsd!"
-  end
-
-
-end
-
-
-Trait.define('TercerTrait') do
-
-  agregarMethod :comer do
-    puts "Como!"
-  end
-
-  agregarMethod :saludar do
-    puts "aosoapskdoo!"
-  end
-
-
-
-end
-
-
-class Persona
-
-  uses (MiTrait + (OtroTrait- :saludar))
-
-end
-
-p = Persona.new
-
-
-
-p.sumar()
-p.saludar()
-p.saltar()
