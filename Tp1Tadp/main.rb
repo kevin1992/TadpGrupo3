@@ -24,73 +24,35 @@ end
 
 
 
-CreadorTrait.definirTrait('OtroTrait',EstrategiaTodosLosMensajes.new ) do
+CreadorTrait.definirTrait('Trait1',EstrategiaPorFuncion.new ) do
 
   agregarMethod :saltar do
-    puts "SALTO!"
+   2
   end
+end
+CreadorTrait.definirTrait('Trait2',EstrategiaPorFuncion.new ) do
 
-
-  agregarMethod :saludar do |persona|
-    puts 'Hola2! '+persona.to_s
+  agregarMethod :saltar do
+   3
   end
+end
+CreadorTrait.definirTrait('Trait3',EstrategiaTodosLosMensajes.new ) do
 
-  agregarMethod :funcion do |numero1, numero2|
-    puts  numero1*numero2
-    numero1*numero2
+  agregarMethod :saltar do
+    puts "SALTO3!"
   end
-
-
 end
 
-
-CreadorTrait.definirTrait('TercerTrait',EstrategiaTodosLosMensajes.new) do
-
-
-
-  agregarMethod :comer do
-    puts "Como!"
-  end
-
-  agregarMethod :saludar do |persona|
-    puts 'Hola3! '+persona.to_s
-  end
-
-  agregarMethod :funcion do |numero1, numero2|
-    puts  numero1*numero1
-    numero1*numero1
-  end
-
-end
-
-
-
-CreadorTrait.definirTrait('ExpTrait') do
-
-
-
-  agregarMethod :comer do
-    puts "Como!"
-  end
-
-  agregarMethod :saludar do |persona|
-    puts 'Hola3! '+persona.to_s
-  end
-
-  agregarMethod :funcion do |numero1, numero2|
-    puts  numero1*numero1
-    numero1*numero1
-  end
-
-end
 
 
 class Persona
-  uses MiTrait + OtroTrait
+  uses Trait1+Trait2+Trait2+Trait2+Trait1
 
 end
 
-p = Persona.new
-p.saludar('persona')
+
+
+p= Persona.new
+puts p.saltar()
 
 

@@ -18,12 +18,6 @@ class EstrategiaPorFuncion
 
 
 
-  def initialize (&bloque)
-
-    self.define_singleton_method(:funcion) {|*args| bloque.yield(*args)}
-
-  end
-
 
   def resolver trait1, trait2,metodoConflictivo,*args
     resultados = []
@@ -34,7 +28,7 @@ class EstrategiaPorFuncion
 
     resultados = resultados.flatten
 
-    puts resultados.inject(0) {|result,elem| self.funcion(result,elem)  }
+   resultados[1..-1].inject(resultados[0]) {|result,elem| result+elem }
 
   end
 

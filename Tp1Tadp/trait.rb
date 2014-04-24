@@ -40,6 +40,10 @@ class Trait
 
   end
 
+  def hayConflicto trait , nombreMetodo
+    trait.metodosAgregados.include? nombreMetodo
+  end
+
 
   def borrarMetodo nombreMetodo, trait
     trait.singleton_class.send(:remove_method, nombreMetodo)
@@ -65,7 +69,7 @@ class Trait
 
     otroTrait.metodosAgregados.each {|nombreMetodo|
 
-      if (nuevoTrait.metodosAgregados.include? nombreMetodo)
+      if (hayConflicto nuevoTrait, nombreMetodo)
         nuevoTrait.define_singleton_method(nombreMetodo)  {|*args| nuevoTrait.estrategia.method(:resolver).call(this,otroTrait,nombreMetodo,*args) }
       else
         self.copiarMetodo nombreMetodo, nuevoTrait, otroTrait
