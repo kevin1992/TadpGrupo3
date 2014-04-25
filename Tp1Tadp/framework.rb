@@ -16,7 +16,7 @@ class Object
 
     trait.estrategia.modificarResolverFinal()
 
-    end
+  end
 
 
 end

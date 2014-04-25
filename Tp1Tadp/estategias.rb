@@ -1,7 +1,7 @@
 
 class EstrategiaAbstract
 
-  def resolver
+  def resolver trait1, trait2,metodoConflictivo,*args
 
   end
 
@@ -27,7 +27,7 @@ class EstrategiaTodosLosMensajes < EstrategiaAbstract
 
 end
 
-class EstrategiaExcepcion
+class EstrategiaExcepcion < EstrategiaAbstract
   def resolver trait1, trait2,metodoConflictivo,*args
     throw Exception.new("Error, conflicto con el metodo "+metodoConflictivo.to_s)
   end
@@ -98,7 +98,7 @@ class EstrategiaPorCorte  < EstrategiaAbstract
       if (resultados[0])
         return resultados[0]
       else
-        throw Exception.new("Ninguno satisface")
+        throw Exception.new("Ninguno satisface la condicion dada")
       end
     }
 

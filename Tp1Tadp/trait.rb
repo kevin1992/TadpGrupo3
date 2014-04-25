@@ -61,10 +61,9 @@ class Trait
     nuevoTrait = Trait.new;
     nuevoTrait.estrategia = self.estrategia.clone
 
-    this = self
 
    self.metodosAgregados.each {|nombreMetodo|
-     self.copiarMetodo nombreMetodo, nuevoTrait, this
+     self.copiarMetodo nombreMetodo, nuevoTrait, self
    }
 
     otroTrait.metodosAgregados.each {|nombreMetodo|
