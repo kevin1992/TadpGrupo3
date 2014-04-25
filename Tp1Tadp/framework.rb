@@ -1,3 +1,7 @@
+require '../Tp1Tadp/creador_trait'
+require '../Tp1Tadp/trait'
+require '../Tp1Tadp/estategias'
+
 class Object
 
 

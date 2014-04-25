@@ -108,3 +108,4 @@ class EstrategiaPorCorte  < EstrategiaAbstract
 end
 
 
+

@@ -1,8 +1,5 @@
+require '../Tp1Tadp/framework'
 
-require '../Tp1Tadp/frameworkExtras'
-require '../Tp1Tadp/creador_trait'
-require '../Tp1Tadp/trait'
-require '../Tp1Tadp/estategias'
 
 
 
@@ -23,13 +20,13 @@ CreadorTrait.definirTrait('MiTrait',EstrategiaTodosLosMensajes.new()) do
 end
 
 
-estrategia = EstrategiaTodosLosMensajes.new() {|elem| elem>0 }
+estrategia = EstrategiaPorCorte.new() {|elem| elem>0 }
 
 
 CreadorTrait.definirTrait('Trait1',estrategia  ) do
 
   agregarMethod :saltar do
-   -1
+   1
   end
 end
 CreadorTrait.definirTrait('Trait2',estrategia  ) do
@@ -41,21 +38,21 @@ end
 CreadorTrait.definirTrait('Trait3',estrategia ) do
 
   agregarMethod :saltar do
-  3
+  -3
   end
 end
 
 CreadorTrait.definirTrait('Trait4',estrategia ) do
 
   agregarMethod :saltar do
-   5
+   -5
   end
 end
 
 
 
 class Persona
-  uses Trait1+Trait2+Trait3+Trait4
+  uses Trait1
 
 end
 
@@ -64,3 +61,4 @@ end
 p= Persona.new
 
 puts p.saltar()
+
