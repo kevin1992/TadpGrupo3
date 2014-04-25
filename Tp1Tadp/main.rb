@@ -23,36 +23,44 @@ CreadorTrait.definirTrait('MiTrait',EstrategiaTodosLosMensajes.new()) do
 end
 
 
+estrategia = EstrategiaTodosLosMensajes.new() {|elem| elem>0 }
 
-CreadorTrait.definirTrait('Trait1',EstrategiaPorFuncion.new ) do
+
+CreadorTrait.definirTrait('Trait1',estrategia  ) do
 
   agregarMethod :saltar do
-   2
+   -1
   end
 end
-CreadorTrait.definirTrait('Trait2',EstrategiaPorFuncion.new ) do
+CreadorTrait.definirTrait('Trait2',estrategia  ) do
 
   agregarMethod :saltar do
-   3
+  -2
   end
 end
-CreadorTrait.definirTrait('Trait3',EstrategiaTodosLosMensajes.new ) do
+CreadorTrait.definirTrait('Trait3',estrategia ) do
 
   agregarMethod :saltar do
-    puts "SALTO3!"
+  3
+  end
+end
+
+CreadorTrait.definirTrait('Trait4',estrategia ) do
+
+  agregarMethod :saltar do
+   5
   end
 end
 
 
 
 class Persona
-  uses Trait1+Trait2+Trait2+Trait2+Trait1
+  uses Trait1+Trait2+Trait3+Trait4
 
 end
 
 
 
 p= Persona.new
+
 puts p.saltar()
-
-

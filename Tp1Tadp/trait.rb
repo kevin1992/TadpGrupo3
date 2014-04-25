@@ -59,7 +59,7 @@ class Trait
   def + (otroTrait)
 
     nuevoTrait = Trait.new;
-    nuevoTrait.estrategia = self.estrategia
+    nuevoTrait.estrategia = self.estrategia.clone
 
     this = self
 

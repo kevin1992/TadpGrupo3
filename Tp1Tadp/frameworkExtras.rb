@@ -1,5 +1,7 @@
 class Object
 
+
+
   def uses (trait, lista=trait.metodosAgregados)
 
 
@@ -7,7 +9,11 @@ class Object
 
     lista.each {|nombreMetodo| define_method(nombreMetodo)  {|*args| trait.method(nombreMetodo).call(*args)}}
 
-  end
+
+    trait.estrategia.modificarResolverFinal()
+
+    end
 
 
 end
+
