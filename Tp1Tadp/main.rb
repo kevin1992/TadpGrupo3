@@ -5,10 +5,10 @@ require '../Tp1Tadp/framework'
 
 
 
-CreadorTrait.definirTrait('MiTrait',EstrategiaExcepcion.new()) do
+CreadorTrait.definirTrait('MiTrait',EstrategiaTodosLosMensajes.new()) do
 
   agregarMethod :saludar do |persona|
-        'Hola! '+persona.to_s
+    'Hola! '+persona.to_s
   end
 
 
@@ -18,7 +18,7 @@ CreadorTrait.definirTrait('MiTrait',EstrategiaExcepcion.new()) do
 
 end
 
-CreadorTrait.definirTrait('MiOtroTrait',EstrategiaExcepcion.new()) do
+CreadorTrait.definirTrait('MiOtroTrait',EstrategiaTodosLosMensajes.new()) do
 
   agregarMethod :saludar do |persona|
    'Hola2! '+persona.to_s
@@ -59,8 +59,7 @@ end
 
 
 class Persona
-  uses MiTrait
-
+  uses MiTrait+MiOtroTrait
 end
 
 
@@ -68,6 +67,7 @@ end
 p= Persona.new
 
 puts p.saludar("kevin")
+
 
 
 

@@ -66,6 +66,8 @@ class Trait
      self.copiarMetodo nombreMetodo, nuevoTrait, self
    }
 
+    this = self
+
     otroTrait.metodosAgregados.each {|nombreMetodo|
 
       if (hayConflicto nuevoTrait, nombreMetodo)
