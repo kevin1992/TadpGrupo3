@@ -7,8 +7,9 @@ require '../Tp1Tadp/framework'
 
 CreadorTrait.definirTrait('MiTrait',EstrategiaTodosLosMensajes.new()) do
 
-  agregarMethod :saludar do |persona|
-    'Hola! '+persona.to_s
+  agregarMethod :saludar do
+
+    'Hola!' + self.nombre
   end
 
 
@@ -59,14 +60,18 @@ end
 
 
 class Persona
-  uses MiTrait+MiOtroTrait
+  attr_accessor :nombre
+  def initialize
+    self.nombre = "kvdgdfevin"
+  end
+  uses MiTrait
 end
 
 
 
 p= Persona.new
 
-puts p.saludar("kevin")
+puts p.saludar()
 
 
 

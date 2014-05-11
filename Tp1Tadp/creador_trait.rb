@@ -8,6 +8,9 @@ class CreadorTrait
     nuevoTrait.estrategia = estrategia
 
 
+
+
+
   end
 
 end

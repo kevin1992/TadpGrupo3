@@ -1,20 +1,24 @@
 
 class Trait
 
-  attr_accessor :metodosAgregados , :estrategia
+  attr_accessor :metodosAgregados , :estrategia, :bloqueMetodos
 
   def initialize()
-    self.metodosAgregados = []
+    self.metodosAgregados = Hash.new();
   end
 
-  def agregarMethod(nombre, &bloque)
-   define_singleton_method (nombre) do |*args| bloque.call(*args) end
-   self.metodosAgregados.push(nombre)
-  end
 
   def agregarMetodos (&bloque)
 
-    instance_eval &bloque
+   self.bloqueMetodos=bloque;
+    instance_eval(&bloque)
+
+  end
+
+  def agregarMethod (nombre,&bloque)
+
+    #guardo cada metodo en el hash
+    self.metodosAgregados[nombre] = bloque;
 
   end
 

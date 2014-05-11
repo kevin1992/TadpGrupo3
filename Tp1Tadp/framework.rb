@@ -8,16 +8,18 @@ class Object
 
   def uses (trait, lista=trait.metodosAgregados)
 
-
-    lista = lista.select {|elem| trait.metodosAgregados.include? elem }
-
-    lista.each {|nombreMetodo| define_method(nombreMetodo)  {|*args| trait.method(nombreMetodo).call(*args)}}
-
-
-    trait.estrategia.modificarResolverFinal()
+    trait.metodosAgregados.each do
+    |nombre,bloque| self.agregarMethod nombre, &bloque
+    end
 
   end
 
+
+
+  def agregarMethod(nombre,&bloque)
+    define_method nombre ,&bloque
+
+  end
 
 end
 
