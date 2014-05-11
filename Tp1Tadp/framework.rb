@@ -17,9 +17,11 @@ class Object
 
 
   def agregarMethod(nombre,&bloque)
-    define_method nombre ,&bloque
-
+    unless self.respond_to?(nombre, false) {
+      define_method nombre, &bloque
+    }
+    end   #prioriza la existencia del metodo en la clase
   end
-
+  
 end
 
