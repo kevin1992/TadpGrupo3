@@ -60,11 +60,12 @@ end
 
 
 class Persona
+  uses MiTrait
   attr_accessor :nombre
   def initialize
     self.nombre = "kvdgdfevin"
   end
-  uses MiTrait
+  
 end
 
 
