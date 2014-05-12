@@ -55,8 +55,9 @@ class Trait
   end
 
   def copiarMetodo nombreMetodo , traitAlQueCopio , traitQueTieneElMetodo
-    traitAlQueCopio.define_singleton_method(nombreMetodo)  {|*args| traitQueTieneElMetodo.method(nombreMetodo).call(*args)}
-    traitAlQueCopio.metodosAgregados.push(nombreMetodo)
+#    traitAlQueCopio.define_singleton_method(nombreMetodo)  {|*args| traitQueTieneElMetodo.method(nombreMetodo).call(*args)}
+  #  traitAlQueCopio.metodosAgregados.push(nombreMetodo)
+    traitAlQueCopio.metodosAgregados[nombreMetodo] = traitQueTieneElMetodo.metodosAgregados[nombreMetodo];
   end
 
 
@@ -75,7 +76,9 @@ class Trait
     otroTrait.metodosAgregados.each {|nombreMetodo|
 
       if (hayConflicto nuevoTrait, nombreMetodo)
-        nuevoTrait.define_singleton_method(nombreMetodo)  {|*args| nuevoTrait.estrategia.method(:resolver).call(this,otroTrait,nombreMetodo,*args) }
+        #nuevoTrait.define_singleton_method(nombreMetodo)  {|*args| nuevoTrait.estrategia.method(:resolver).call(this,otroTrait,nombreMetodo,*args) }
+        nuevoBloque=self.estrategia.resolver(nuevoTrait.metodosAgregados[nombreMetodo],otroTrait.metodosAgregados[nombreMetodo])
+        nuevoTrait.metodosAgregados[nombreMetodo]=nuevoBloque
       else
         self.copiarMetodo nombreMetodo, nuevoTrait, otroTrait
       end
