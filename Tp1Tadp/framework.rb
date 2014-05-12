@@ -24,7 +24,8 @@ class Object
     
     
     if (!(self.respond_to?(nombre)))
-      define_method nombre, &bloque
+      #define_method nombre, &bloque
+      define_method nombre[0].to_s, nombre[1].to_proc
     end   #prioriza la existencia del metodo en la clase
     
   end
