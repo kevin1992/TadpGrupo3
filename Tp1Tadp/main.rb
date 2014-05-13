@@ -1,8 +1,5 @@
+require_relative 'framework'
 
-require '../Tp1Tadp/frameworkExtras'
-require '../Tp1Tadp/creador_trait'
-require '../Tp1Tadp/trait'
-require '../Tp1Tadp/estategias'
 
 
 
@@ -10,87 +7,86 @@ require '../Tp1Tadp/estategias'
 
 CreadorTrait.definirTrait('MiTrait',EstrategiaTodosLosMensajes.new()) do
 
-  agregarMethod :saludar do |persona|
-        puts 'Hola! '+persona.to_s
+  agregarMethod :saludar do
+
+    'Hola!' + self.nombre
   end
 
-  agregarMethod :funcion do |numero1, numero2|
-    puts  numero1+numero2
-   numero1+numero2
+
+  agregarMethod :chau do
+     'chau! '+nombre.to_s
+  end
+
+end
+
+CreadorTrait.definirTrait('MiOtroTrait',EstrategiaTodosLosMensajes.new()) do
+
+  agregarMethod :saludar do
+    'conflicto mi otro trait'
+  end
+  agregarMethod :hablar do ||
+   'blabla '+nombre.to_s
   end
 
 
 end
 
+estrategia = EstrategiaPorCorte.new() {|elem| elem>0 }
 
-
-CreadorTrait.definirTrait('OtroTrait',EstrategiaTodosLosMensajes.new ) do
+=begin
+CreadorTrait.definirTrait('Trait1',estrategia  ) do
 
   agregarMethod :saltar do
-    puts "SALTO!"
+   1
   end
+end
+CreadorTrait.definirTrait('Trait2',estrategia  ) do
 
-
-  agregarMethod :saludar do |persona|
-    puts 'Hola2! '+persona.to_s
+  agregarMethod :saltar do
+  -2
   end
+end
+CreadorTrait.definirTrait('Trait3',estrategia ) do
 
-  agregarMethod :funcion do |numero1, numero2|
-    puts  numero1*numero2
-    numero1*numero2
+  agregarMethod :saltar do
+  -3
   end
-
-
 end
 
+CreadorTrait.definirTrait('Trait4',estrategia ) do
 
-CreadorTrait.definirTrait('TercerTrait',EstrategiaTodosLosMensajes.new) do
-
-
-
-  agregarMethod :comer do
-    puts "Como!"
+  agregarMethod :saltar do
+   -5
   end
-
-  agregarMethod :saludar do |persona|
-    puts 'Hola3! '+persona.to_s
-  end
-
-  agregarMethod :funcion do |numero1, numero2|
-    puts  numero1*numero1
-    numero1*numero1
-  end
-
 end
-
-
-
-CreadorTrait.definirTrait('ExpTrait') do
-
-
-
-  agregarMethod :comer do
-    puts "Como!"
-  end
-
-  agregarMethod :saludar do |persona|
-    puts 'Hola3! '+persona.to_s
-  end
-
-  agregarMethod :funcion do |numero1, numero2|
-    puts  numero1*numero1
-    numero1*numero1
-  end
-
-end
+=end
 
 
 class Persona
-  uses MiTrait + OtroTrait
+  uses MiTrait+MiOtroTrait
+  attr_accessor :nombre
+  def initialize(nombre)
+    self.nombre = nombre
+    end
 
-end
+end    #tira TraitException por :saludar
 
-p = Persona.new
-p.saludar('persona')
+p= Persona.new("kevin")
 
+puts p.saludar
+puts p.chau
 
+# class Persona
+#   uses (MiTrait+MiOtroTrait){
+#     resolver_con(EstrategiaTodosLosMensajes.new, :saludar, :mitrait_saludar)
+#   }
+#   attr_accessor :nombre
+#   def initialize(nombre)
+#     self.nombre = nombre
+#   end
+#
+# end    #sintaxis para resolver conflictos
+#
+#
+#
+#
