@@ -1,10 +1,12 @@
+class TraitException < Exception; end
 
 class Trait
 
-  attr_accessor :metodosAgregados , :estrategia, :bloqueMetodos
+  attr_accessor :metodosAgregados, :bloqueMetodos, :conflictos, :nombre
 
-  def initialize()
+  def initialize
     self.metodosAgregados = Hash.new();
+    self.conflictos=[]
   end
 
 
@@ -12,14 +14,12 @@ class Trait
 
    self.bloqueMetodos=bloque;
     instance_eval(&bloque)
-
   end
 
   def agregarMethod (nombre,&bloque)
 
     #guardo cada metodo en el hash
     self.metodosAgregados[nombre] = bloque;
-
   end
 
   def - (*metodos)
@@ -45,7 +45,7 @@ class Trait
   end
 
   def hayConflicto trait , nombreMetodo
-    trait.metodosAgregados.include? nombreMetodo
+    trait.metodosAgregados.include? nombreMetodo[0].to_sym
   end
 
 
@@ -60,31 +60,37 @@ class Trait
     traitAlQueCopio.metodosAgregados[nombreMetodo] = traitQueTieneElMetodo.metodosAgregados[nombreMetodo];
   end
 
+  def copiarMetodo_alias nombreMetodo, nombreMetodoAliased, traitAlQueCopio, traitQueTieneElMetodo
+    traitAlQueCopio.metodosAgregados[nombreMetodoAliased] = traitQueTieneElMetodo.metodosAgregados[nombreMetodo]
+  end
+
 
   def + (otroTrait)
 
-    nuevoTrait = Trait.new;
+    nuevoTrait = Trait.new
     nuevoTrait.estrategia = self.estrategia.clone
 
 
-   self.metodosAgregados.each {|nombreMetodo|
-     self.copiarMetodo nombreMetodo, nuevoTrait, self
+   self.metodosAgregados.each {|metodo|
+     self.copiarMetodo metodo[0], nuevoTrait, self
    }
 
-    this = self
-
     otroTrait.metodosAgregados.each {|nombreMetodo|
+      if hayConflicto nuevoTrait, nombreMetodo
 
-      if (hayConflicto nuevoTrait, nombreMetodo)
-        #nuevoTrait.define_singleton_method(nombreMetodo)  {|*args| nuevoTrait.estrategia.method(:resolver).call(this,otroTrait,nombreMetodo,*args) }
-        nuevoBloque=self.estrategia.resolver(nuevoTrait.metodosAgregados[nombreMetodo],otroTrait.metodosAgregados[nombreMetodo])
-        nuevoTrait.metodosAgregados[nombreMetodo]=nuevoBloque
+        @nombreMetodoAliased = (self.nombre.downcase+'_'+nombreMetodo[0].to_s).to_sym  # :m => trait1_m   Para que el user pueda resolver el conflito
+        self.copiarMetodo_alias nombreMetodo[0], @nombreMetodoAliased, nuevoTrait, otroTrait
+        self.conflictos << @nombreMetodoAliased
+        self.conflictos << nombreMetodo[0]
+        #nuevoBloque=self.estrategia.resolver(nuevoTrait.metodosAgregados[nombreMetodo],otroTrait.metodosAgregados[nombreMetodo])
+        #nuevoTrait.metodosAgregados[nombreMetodo]=nuevoBloque
       else
-        self.copiarMetodo nombreMetodo, nuevoTrait, otroTrait
+        self.copiarMetodo nombreMetodo[0], nuevoTrait, otroTrait
       end
 
     }
 
+    nuevoTrait.conflictos = self.conflictos
     nuevoTrait
 
   end
