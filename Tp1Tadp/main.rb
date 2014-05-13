@@ -63,6 +63,7 @@ end
 
 
 class Persona
+  #uses MiTrait << ('saludar,saludo') Forma de usar el <<
   uses MiTrait+MiOtroTrait
   attr_accessor :nombre
   def initialize(nombre)
