@@ -50,7 +50,7 @@ class Trait
 
 
   def borrarMetodo nombreMetodo, trait
-    trait.singleton_class.send(:remove_method, nombreMetodo)
+    #trait.singleton_class.send(:remove_method, nombreMetodo)
     trait.metodosAgregados.delete(nombreMetodo)
   end
 
