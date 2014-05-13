@@ -2,7 +2,7 @@ class TraitException < Exception; end
 
 class Trait
 
-  attr_accessor :metodosAgregados, :bloqueMetodos, :conflictos, :nombre
+  attr_accessor :metodosAgregados, :bloqueMetodos, :conflictos, :nombre, :estrategia
 
   def initialize
     self.metodosAgregados = Hash.new();
