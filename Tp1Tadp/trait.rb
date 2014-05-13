@@ -36,9 +36,19 @@ class Trait
   end
 
 
-  def << metodoOriginal,nuevoNombreMetodo
+ def << metodoReemplazo
 
-    agregarMethod(nuevoNombreMetodo) {|*args| method(metodoOriginal).call(*args)}
+    arr=metodoReemplazo.to_s.split(',')
+    nuevoNombreMetodo=arr[1].to_s
+    metodoOriginal=arr[0].to_s
+
+    #agregarMethod(nuevoNombreMetodo) {|*args| method(metodoOriginal).call(*args)}
+    aux=self.metodosAgregados.clone
+
+    aux.each {|nombre,bloque| if(nombre.to_s.eql? metodoOriginal) then self.metodosAgregados[nuevoNombreMetodo]=bloque end}
+
+   # self.metodosAgregados[nuevoNombreMetodo]=
+
 
     self
 
