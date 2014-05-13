@@ -1,35 +1,44 @@
 
 class EstrategiaAbstract
 
-  def resolver trait1, trait2,metodoConflictivo,*args
+  attr_accessor :metodos
 
+  def initilize
+    self.metodos=[]
   end
 
+  def agrega (m)
+    puts m
+    puts self.metodos.class   #para prueba
+    self.metodos << m.to_s
+  end
 
-  def resolverFinal resultados
+=begin
+  def resolver(*metodos_conflictivos)
+    throw Exception.new('Error. Metodos conflictivos: ' + metodos_conflictivos.to_s)
+  end
+
+  def resolver_final(resultados)
     resultados
   end
 
-  def modificarResolverFinal
-
+  def modificar_resolver_final
   end
-
+=end
 end
-
 
 
 class EstrategiaTodosLosMensajes < EstrategiaAbstract
 
-  def resolver trait1, trait2,metodoConflictivo,*args
-    trait1.method(metodoConflictivo).call(*args)
-    trait2.method(metodoConflictivo).call(*args)
+  def resolver(clase)
+    clase.define_method (metodos[0]) {clase.ejecutar(metodos)}
   end
 
 end
 
 class EstrategiaExcepcion < EstrategiaAbstract
-  def resolver trait1, trait2,metodoConflictivo,*args
-    throw Exception.new("Error, conflicto con el metodo "+metodoConflictivo.to_s)
+  def resolver(trait1, trait2, metodo_conflictivo, *args)
+    throw Exception.new("Error, conflicto con el metodo " + metodo_conflictivo.to_s)
   end
 end
 
@@ -42,14 +51,14 @@ class EstrategiaPorFuncion  < EstrategiaAbstract
   end
 
 
-  def resolver trait1, trait2,metodoConflictivo,*args
+  def resolver(trait1, trait2, metodo_conflictivo, *args)
     resultados = []
-    resultados.push(trait1.method(metodoConflictivo).call(*args))
-    resultados.push(trait2.method(metodoConflictivo).call(*args))
+    resultados.push(trait1.method(metodo_conflictivo).call(*args))
+    resultados.push(trait2.method(metodo_conflictivo).call(*args))
 
     resultados = resultados.flatten
 
-    resultados[1..-1].inject(resultados[0]) {|result,elem| funcion.call(result,elem) }
+    resultados[1..-1].inject(resultados[0]) { |result, elem| funcion.call(result, elem) }
 
   end
 
@@ -58,7 +67,7 @@ end
 
 class EstrategiaNoHacerNada  < EstrategiaAbstract
 
-  def resolver trait1, trait2,metodoConflictivo,*args
+  def resolver(trait1, trait2, metodo_conflictivo, *args)
 
   end
 
@@ -76,26 +85,26 @@ class EstrategiaPorCorte  < EstrategiaAbstract
   end
 
 
-  def resolver trait1, trait2,metodoConflictivo,*args
+  def resolver(trait1, trait2, metodo_conflictivo, *args)
 
     resultados = []
-    resultados.push(trait1.method(metodoConflictivo).call(*args))
-    resultados.push(trait2.method(metodoConflictivo).call(*args))
+    resultados.push(trait1.method(metodo_conflictivo).call(*args))
+    resultados.push(trait2.method(metodo_conflictivo).call(*args))
 
     resultados = resultados.flatten
 
 
-    resultados = resultados.select {|*args| condicion.call(*args)}
+    resultados = resultados.select { |*args| condicion.call(*args) }
 
-    self.resolverFinal(resultados)
+    self.resolver_final(resultados)
 
   end
 
-  def modificarResolverFinal
+  def modificar_resolver_final
 
     define_singleton_method(:resolverFinal) {
         |resultados|
-      if (resultados[0])
+      if resultados[0]
         return resultados[0]
       else
         throw Exception.new("Ninguno satisface la condicion dada")

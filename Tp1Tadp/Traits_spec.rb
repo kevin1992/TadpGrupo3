@@ -15,10 +15,10 @@ describe 'Algebra' do
 
   CreadorTrait.definirTrait('MiOtroTrait', EstrategiaExcepcion.new()) do
     agregarMethod :metodo1 do
-      "kawuabonga"
+      'kawuabonga'
     end
     agregarMethod :metodo3 do
-      "mundo"
+      'mundo'
     end
   end
 
@@ -32,8 +32,8 @@ describe 'Algebra' do
     expect{
       o.metodo2(84)
     }.to raise_error NoMethodError
-    o.metodo3.should == "mundo"
-    o.metodo1.should == "hola"
+    o.metodo3.should == 'mundo'
+    o.metodo1.should == 'hola'
 
   end
 
@@ -44,7 +44,7 @@ describe 'Algebra' do
     end
     o = TodoBienTodoLegal.new
     o.metodo2(84).should == 42
-    o.metodo3.should == "mundo"
+    o.metodo3.should == 'mundo'
     expect{
       o.metodo1
     }.to raise_error
@@ -57,8 +57,8 @@ describe 'Algebra' do
       uses MiTrait << :metodo1, :saludo
     end
     o = ConAlias.new
-    o.saludo.should == "hola"
-    o.metodo1.should == "hola"
+    o.saludo.should == 'hola'
+    o.metodo1.should == 'hola'
     o.metodo2(84).should == 42
 
 

@@ -1,4 +1,4 @@
-require '../Tp1Tadp/framework'
+require_relative 'framework'
 
 
 
@@ -7,21 +7,25 @@ require '../Tp1Tadp/framework'
 
 CreadorTrait.definirTrait('MiTrait',EstrategiaTodosLosMensajes.new()) do
 
-  agregarMethod :saludar do |persona|
-    'Hola! '+persona.to_s
+  agregarMethod :saludar do
+
+    'Hola!' + self.nombre
   end
 
 
-  agregarMethod :chau do |persona|
-     'chau! '+persona.to_s
+  agregarMethod :chau do
+     'chau! '+nombre.to_s
   end
 
 end
 
 CreadorTrait.definirTrait('MiOtroTrait',EstrategiaTodosLosMensajes.new()) do
 
-  agregarMethod :saludar do |persona|
-   'Hola2! '+persona.to_s
+  agregarMethod :saludar do
+    'conflicto mi otro trait'
+  end
+  agregarMethod :hablar do ||
+   'blabla '+nombre.to_s
   end
 
 
@@ -29,7 +33,7 @@ end
 
 estrategia = EstrategiaPorCorte.new() {|elem| elem>0 }
 
-
+=begin
 CreadorTrait.definirTrait('Trait1',estrategia  ) do
 
   agregarMethod :saltar do
@@ -55,20 +59,34 @@ CreadorTrait.definirTrait('Trait4',estrategia ) do
    -5
   end
 end
-
+=end
 
 
 class Persona
   uses MiTrait+MiOtroTrait
-end
+  attr_accessor :nombre
+  def initialize(nombre)
+    self.nombre = nombre
+    end
 
+end    #tira TraitException por :saludar
 
+p= Persona.new("kevin")
 
-p= Persona.new
+puts p.saludar
+puts p.chau
 
-puts p.saludar("kevin")
-
-
-
-
-
+# class Persona
+#   uses (MiTrait+MiOtroTrait){
+#     resolver_con(EstrategiaTodosLosMensajes.new, :saludar, :mitrait_saludar)
+#   }
+#   attr_accessor :nombre
+#   def initialize(nombre)
+#     self.nombre = nombre
+#   end
+#
+# end    #sintaxis para resolver conflictos
+#
+#
+#
+#
