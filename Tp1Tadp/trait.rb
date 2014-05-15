@@ -33,19 +33,6 @@ class Trait
 
   end
 
-  def - (*metodos)
-
-    nuevoTrait = self.clone
-
-    metodos.each {|metodo|
-      borrarMetodo(metodo,nuevoTrait)
-    }
-
-    nuevoTrait
-
-
-  end
-
 
  def << metodoReemplazo
 
@@ -97,6 +84,17 @@ class Trait
 
   end
 
+  def << (nombreMetodoOriginal , nuevoNombreMetodoOriginal)
+
+    nuevoTrait = Trait.new
+
+    copiarMetodos self , nuevoTrait
+
+    nuevoTrait.metodosAgregados[nuevoNombreMetodoOriginal] =  nuevoTrait.metodosAgregados[nombreMetodoOriginal]
+
+    nuevoTrait
+
+  end
 
 
 end

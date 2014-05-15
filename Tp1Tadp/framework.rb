@@ -4,28 +4,36 @@ require '../Tp1Tadp/estategias'
 
 class Object
 
-  def uses (trait, &block)
+  def uses (trait, estrategia)
 
 
       trait.metodosAgregados.each do
       |metodo|
-        self.agregarMethod metodo
+        self.nuevoMetodo metodo , estrategia
       end
 
 
   end
 
-  def agregarMethod(metodo)
+  def nuevoMetodo(metodo, estrategia)
 
     # metodo[1] es el array con todos los bloques de comportamiento del metodo
 
-    metodo[1].each {
-        |bloqueComportamiento|
-      define_method metodo[0], bloqueComportamiento
-    }
+   if hayConflicto metodo[1]
+   metodoResuelto = estrategia.resolver(metodo)
+    else
+      metodoResuelto = metodo[1][0]
+    end
+
+      define_method metodo[0], metodoResuelto
 
 
-  end
+    end
+
+
+    def hayConflicto arrayMetodos
+      arrayMetodos.size>1
+    end
 
 end
 

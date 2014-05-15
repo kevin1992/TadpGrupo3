@@ -13,25 +13,37 @@ CreadorTrait.definirTrait('MiTrait') do
   end
 
 
-  agregarMethod :chau do  |nombre|
-     'chau! '+nombre.to_s
+  agregarMethod :chau do
+     'Adios'
+  end
+
+
+
+end
+
+CreadorTrait.definirTrait('MiOtroTrait') do
+
+  agregarMethod :saltar do |num|
+   puts 'Salto ' + num.to_s + ' Metros'
+  end
+
+
+end
+
+
+class PersonaSuma2Traits
+  uses MiTrait + MiOtroTrait , EstrategiaTodosLosMensajes.new()
+
+  attr_accessor :nombre
+  def initialize(nombre)
+    self.nombre = nombre
   end
 
 end
 
+p= PersonaSuma2Traits.new("kevin")
+p.saltar(5)
+puts p.saludar()
+puts p.chau()
 
 
-class Persona
-
-  uses MiTrait
-  attr_accessor :nombre
-  def initialize(nombre)
-    self.nombre = nombre
-    end
-
-end
-
-p= Persona.new("kevin")
-
-puts p.saludar
-puts p.chau('kevin')
