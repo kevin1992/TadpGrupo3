@@ -34,12 +34,6 @@ class Trait
   end
 
 
- def << metodoReemplazo
-
-   self
-
-  end
-
   def hayConflicto trait , nombreMetodo
     trait.metodosAgregados.include? nombreMetodo[0].to_sym
   end
