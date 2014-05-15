@@ -4,36 +4,36 @@ require '../Tp1Tadp/estategias'
 
 class Object
 
-  def uses (trait, &block)
+  def uses (trait, estrategia)
 
-    yield unless block.nil?  #llama al bloque de resolver
 
-    if (trait.conflictos == []) then
       trait.metodosAgregados.each do
-      |nombre|
-        self.agregarMethod nombre
+      |metodo|
+        self.nuevoMetodo metodo , estrategia
       end
+
+
+  end
+
+  def nuevoMetodo(metodo, estrategia)
+
+    # metodo[1] es el array con todos los bloques de comportamiento del metodo
+
+   if hayConflicto metodo[1]
+   metodoResuelto = estrategia.resolver(metodo)
     else
-      raise TraitException.new('Conflicto con los metodos: ' + trait.conflictos.to_s)
+      metodoResuelto = metodo[1][0]
     end
-  end
 
-  def resolver_con(estrategia, *metodos)
-    metodos.each {|m| estrategia.agrega(m)}
-    estrategia.resolver(self)
-  end
+      define_method metodo[0], metodoResuelto
 
-  def agregarMethod(metodo)
 
-      if !(self.respond_to?(metodo[0]))
-      define_method metodo[0], metodo[1]
-      #define_method nombre[0].to_s, nombre[1].to_proc
-    end   #prioriza la existencia del metodo en la clase
+    end
 
-  end
 
-  def ejecutar(*metodos)
-    metodos.each {|m| self.send (m)}
-  end
+    def hayConflicto arrayMetodos
+      arrayMetodos.size>1
+    end
+
 end
 
