@@ -13,8 +13,8 @@ CreadorTrait.definirTrait('MiTrait') do
   end
 
 
-  agregarMethod :chau do
-     'Adios'
+  agregarMethod :chau do |num|
+   5+ num
   end
 
 
@@ -27,12 +27,16 @@ CreadorTrait.definirTrait('MiOtroTrait') do
    puts 'Salto ' + num.to_s + ' Metros'
   end
 
+  agregarMethod :chau do |num|
+    7+ num
+  end
+
 
 end
 
 
 class PersonaSuma2Traits
-  uses MiTrait + MiOtroTrait , EstrategiaTodosLosMensajes.new()
+  uses MiTrait + MiOtroTrait , EstrategiaPorCorte.new() {|resultado| resultado>5}
 
   attr_accessor :nombre
   def initialize(nombre)
@@ -44,6 +48,6 @@ end
 p= PersonaSuma2Traits.new("kevin")
 p.saltar(5)
 puts p.saludar()
-puts p.chau()
+puts p.chau(2)
 
 
