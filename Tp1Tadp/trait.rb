@@ -2,11 +2,11 @@ class TraitException < Exception; end
 
 class Trait
 
-  attr_accessor :metodosAgregados, :bloqueMetodos,  :nombre, :estrategia
+  attr_accessor :metodosAgregados, :bloqueMetodos, :conflictos, :nombre, :estrategia
 
   def initialize
     self.metodosAgregados = Hash.new();
-
+    self.conflictos=[]
   end
 
 
@@ -16,21 +16,10 @@ class Trait
     instance_eval(&bloque)
   end
 
-  def setHash nombre
-
-    if self.metodosAgregados[nombre].nil?
-      self.metodosAgregados[nombre] = []
-    end
-
-  end
-
   def agregarMethod (nombre,&bloque)
 
-
-    setHash nombre
-
-    self.metodosAgregados[nombre] << bloque;
-
+    #guardo cada metodo en el hash
+    self.metodosAgregados[nombre] = bloque;
   end
 
   def - (*metodos)
@@ -49,7 +38,19 @@ class Trait
 
  def << metodoReemplazo
 
-   self
+    arr=metodoReemplazo.to_s.split(',')
+    nuevoNombreMetodo=arr[1].to_s
+    metodoOriginal=arr[0].to_s
+
+    #agregarMethod(nuevoNombreMetodo) {|*args| method(metodoOriginal).call(*args)}
+    aux=self.metodosAgregados.clone
+
+    aux.each {|nombre,bloque| if(nombre.to_s.eql? metodoOriginal) then self.metodosAgregados[nuevoNombreMetodo]=bloque end}
+
+   # self.metodosAgregados[nuevoNombreMetodo]=
+
+
+    self
 
   end
 
@@ -59,40 +60,48 @@ class Trait
 
 
   def borrarMetodo nombreMetodo, trait
+    #trait.singleton_class.send(:remove_method, nombreMetodo)
     trait.metodosAgregados.delete(nombreMetodo)
   end
 
-  def copiarMetodos trait , traitAlQueCopio
-    trait.metodosAgregados.each { |nombre,comportamientos|
-
-      comportamientos.each {|comportamiento|
-        traitAlQueCopio.agregarMethod nombre, &comportamiento
-      }
-
-    }
+  def copiarMetodo nombreMetodo , traitAlQueCopio , traitQueTieneElMetodo
+#    traitAlQueCopio.define_singleton_method(nombreMetodo)  {|*args| traitQueTieneElMetodo.method(nombreMetodo).call(*args)}
+  #  traitAlQueCopio.metodosAgregados.push(nombreMetodo)
+    traitAlQueCopio.metodosAgregados[nombreMetodo] = traitQueTieneElMetodo.metodosAgregados[nombreMetodo];
   end
 
+  def copiarMetodo_alias nombreMetodo, nombreMetodoAliased, traitAlQueCopio, traitQueTieneElMetodo
+    traitAlQueCopio.metodosAgregados[nombreMetodoAliased] = traitQueTieneElMetodo.metodosAgregados[nombreMetodo]
+  end
 
 
   def + (otroTrait)
 
-       nuevoTrait = Trait.new
-
-      copiarMetodos self , nuevoTrait
-      copiarMetodos otroTrait , nuevoTrait
-
-
-    nuevoTrait
-
-  end
+    nuevoTrait = Trait.new
+    nuevoTrait.nombre = self.nombre
+#    nuevoTrait.estrategia = self.estrategia.clone
 
 
-  def - (*metodos)
+   self.metodosAgregados.each {|metodo|
+     self.copiarMetodo metodo[0], nuevoTrait, self
+   }
 
-    nuevoTrait = self.clone
+    otroTrait.metodosAgregados.each {|nombreMetodo|
+      if hayConflicto nuevoTrait, nombreMetodo
 
-    metodos.each {|metodo| borrarMetodo(metodo,nuevoTrait)}
+        @nombreMetodoAliased = (self.nombre.downcase+'_'+nombreMetodo[0].to_s).to_sym  # :m => trait1_m   Para que el user pueda resolver el conflito
+        self.copiarMetodo_alias nombreMetodo[0], @nombreMetodoAliased, nuevoTrait, otroTrait
+        self.conflictos << @nombreMetodoAliased
+        self.conflictos << nombreMetodo[0]
+        #nuevoBloque=self.estrategia.resolver(nuevoTrait.metodosAgregados[nombreMetodo],otroTrait.metodosAgregados[nombreMetodo])
+        #nuevoTrait.metodosAgregados[nombreMetodo]=nuevoBloque
+      else
+        self.copiarMetodo nombreMetodo[0], nuevoTrait, otroTrait
+      end
 
+    }
+
+    nuevoTrait.conflictos = self.conflictos
     nuevoTrait
 
   end

@@ -9,8 +9,8 @@ class EstrategiaAbstract
 
   def agrega (m)
     puts m
-    puts self.metodos.class   #para prueba
-    self.metodos << m.to_s
+    puts self.metodos.class   #para prueba NILLLLL
+    #self.metodos << m.to_s
   end
 
 =begin
@@ -31,7 +31,7 @@ end
 class EstrategiaTodosLosMensajes < EstrategiaAbstract
 
   def resolver(clase)
-    clase.define_method (metodos[0]) {clase.ejecutar(metodos)}
+    #clase.define_method (metodos[0]) {clase.ejecutar(metodos)}
   end
 
 end
