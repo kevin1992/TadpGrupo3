@@ -52,12 +52,15 @@ class EstrategiaPorFuncion  < EstrategiaAbstract
   def resolver metodo
 
     comportamientos = metodo[1]
+    funcion = self.funcion
 
-    resultados = comportamientos.map { |comportamiento| comportamiento.call() }
+    lambda { |*args|
+
+    resultados = comportamientos.map { |comportamiento| comportamiento.call(*args) }
 
    resultadoFinal =  resultados[1..-1].inject(resultados[0]) { |result, elem| funcion.call(result, elem) }
 
-  lambda { resultadoFinal }
+  resultadoFinal }
 
   end
 
@@ -78,21 +81,25 @@ class EstrategiaPorCorte  < EstrategiaAbstract
   def resolver metodo
 
       comportamientos = metodo[1]
+      condicion = self.condicion
+
+      lambda { |*args|
 
       resultados = comportamientos.each {
 
           |comportamiento|
 
-        resultado = comportamiento.call()
+        resultado = comportamiento.call(*args)
 
-        if self.condicion.call(resultado)
-          return lambda {resultado}
+        if condicion.call(resultado)
+          return resultado
         end
 
       }
 
     raise 'Ninguno cumple con la condicion'
 
+  }
 
   end
 
