@@ -34,11 +34,6 @@ class Trait
   end
 
 
-  def hayConflicto trait , nombreMetodo
-    trait.metodosAgregados.include? nombreMetodo[0].to_sym
-  end
-
-
   def borrarMetodo nombreMetodo, trait
     trait.metodosAgregados.delete(nombreMetodo)
   end
