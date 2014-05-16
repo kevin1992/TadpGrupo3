@@ -5,88 +5,49 @@ require_relative 'framework'
 
 
 
-CreadorTrait.definirTrait('MiTrait',EstrategiaTodosLosMensajes.new()) do
+CreadorTrait.definirTrait('MiTrait') do
 
   agregarMethod :saludar do
 
-    'Hola!' + self.nombre
+    'Hola! ' + self.nombre
   end
 
 
-  agregarMethod :chau do
-     'chau! '+nombre.to_s
+  agregarMethod :chau do |num|
+   5+ num
   end
 
-end
-
-CreadorTrait.definirTrait('MiOtroTrait',EstrategiaTodosLosMensajes.new()) do
-
-  agregarMethod :saludar do
-    'conflicto mi otro trait'
-  end
-  agregarMethod :hablar do ||
-   'blabla '+nombre.to_s
-  end
 
 
 end
 
-estrategia = EstrategiaPorCorte.new() {|elem| elem>0 }
+CreadorTrait.definirTrait('MiOtroTrait') do
 
-=begin
-CreadorTrait.definirTrait('Trait1',estrategia  ) do
-
-  agregarMethod :saltar do
-   1
+  agregarMethod :saltar do |num|
+   puts 'Salto ' + num.to_s + ' Metros'
   end
-end
-CreadorTrait.definirTrait('Trait2',estrategia  ) do
 
-  agregarMethod :saltar do
-  -2
+  agregarMethod :chau do |num|
+    7+ num
   end
-end
-CreadorTrait.definirTrait('Trait3',estrategia ) do
 
-  agregarMethod :saltar do
-  -3
-  end
+
 end
 
-CreadorTrait.definirTrait('Trait4',estrategia ) do
 
-  agregarMethod :saltar do
-   -5
-  end
-end
-=end
+class PersonaSuma2Traits
+  uses MiTrait + MiOtroTrait , EstrategiaPorCorte.new() {|resultado| resultado>15}
 
-
-class Persona
-  uses MiTrait+MiOtroTrait
   attr_accessor :nombre
   def initialize(nombre)
     self.nombre = nombre
-    end
+  end
 
-end    #tira TraitException por :saludar
+end
 
-p= Persona.new("kevin")
+p= PersonaSuma2Traits.new("kevin")
+p.saltar(5)
+puts p.saludar()
+puts p.chau(2)
 
-puts p.saludar
-puts p.chau
 
-# class Persona
-#   uses (MiTrait+MiOtroTrait){
-#     resolver_con(EstrategiaTodosLosMensajes.new, :saludar, :mitrait_saludar)
-#   }
-#   attr_accessor :nombre
-#   def initialize(nombre)
-#     self.nombre = nombre
-#   end
-#
-# end    #sintaxis para resolver conflictos
-#
-#
-#
-#
