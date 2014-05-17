@@ -20,9 +20,10 @@ class EstrategiaTodosLosMensajes < EstrategiaAbstract
 
   lambda {  |*args|
     for i in 0..comportamientos.size-2
-      comportamientos[i].call(*args)
+      instance_eval  { comportamientos[i].call(*args)}
+
     end
-  return comportamientos.last.call(*args)
+    return instance_eval  { comportamientos.last.call(*args)}
 
   }
 
@@ -36,7 +37,7 @@ class EstrategiaExcepcion < EstrategiaAbstract
 
     nombre = metodo[0]
 
-    raise TraitImplementationError, 'Conflicto con el metodo '+ nombre.to_s.upcase
+    lambda{    raise TraitImplementationError, 'Conflicto con el metodo '+ nombre.to_s.upcase}
 
   end
 
@@ -58,7 +59,7 @@ class EstrategiaPorFuncion  < EstrategiaAbstract
 
     lambda { |*args|
 
-    resultados = comportamientos.map { |comportamiento| comportamiento.call(*args) }
+    resultados = comportamientos.map { |comportamiento| instance_eval  { comportamiento.call(*args)} }
 
    resultadoFinal =  resultados[1..-1].inject(resultados[0]) { |result, elem| funcion.call(result, elem) }
 
@@ -91,7 +92,7 @@ class EstrategiaPorCorte  < EstrategiaAbstract
 
           |comportamiento|
 
-        resultado = comportamiento.call(*args)
+        resultado = instance_eval  { comportamiento.call(*args)}
 
         if condicion.call(resultado)
           return resultado

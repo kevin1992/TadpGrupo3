@@ -9,7 +9,7 @@ CreadorTrait.definirTrait('MiTrait') do
 
   agregarMethod :saludar do
 
-    'Hola! ' + self.nombre
+    'Hola! ' + self.nombresss
   end
 
 
