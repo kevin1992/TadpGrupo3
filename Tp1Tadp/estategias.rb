@@ -1,8 +1,10 @@
+class TraitImplementationError < StandardError; end
+class TraitConditionalEval < TraitImplementationError; end
 
 class EstrategiaAbstract
 
   def resolver metodo
-    raise 'Se debe definir el metodo resolver para crear una estrategia'
+    raise TraitImplementationError 'Se debe definir el metodo resolver para crear una estrategia'
   end
 
 end
@@ -34,7 +36,7 @@ class EstrategiaExcepcion < EstrategiaAbstract
 
     nombre = metodo[0]
 
-    raise 'Conflicto con el metodo '+ nombre.to_s.upcase
+    raise TraitImplementationError, 'Conflicto con el metodo '+ nombre.to_s.upcase
 
   end
 
@@ -85,7 +87,7 @@ class EstrategiaPorCorte  < EstrategiaAbstract
 
       lambda { |*args|
 
-      resultados = comportamientos.each {
+      comportamientos.each {
 
           |comportamiento|
 
@@ -97,7 +99,7 @@ class EstrategiaPorCorte  < EstrategiaAbstract
 
       }
 
-    raise 'Ninguno cumple con la condicion'
+    raise TraitConditionalEval, "Ninguna implementacion de :#{metodo[0].to_s} cumple con la condicion "
 
   }
 
@@ -105,6 +107,3 @@ class EstrategiaPorCorte  < EstrategiaAbstract
 
 
 end
-
-
-

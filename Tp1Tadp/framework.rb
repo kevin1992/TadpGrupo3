@@ -27,7 +27,6 @@ class Object
 
       define_method metodo[0], metodoResuelto
 
-
     end
 
 

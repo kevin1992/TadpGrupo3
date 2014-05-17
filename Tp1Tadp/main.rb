@@ -36,7 +36,7 @@ end
 
 
 class PersonaSuma2Traits
-  uses MiTrait + MiOtroTrait , EstrategiaPorCorte.new() {|resultado| resultado>5}
+  uses MiTrait + MiOtroTrait , EstrategiaPorCorte.new() {|resultado| resultado>11}
 
   attr_accessor :nombre
   def initialize(nombre)

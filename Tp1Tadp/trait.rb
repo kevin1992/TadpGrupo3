@@ -1,18 +1,15 @@
-class TraitException < Exception; end
-
 class Trait
 
-  attr_accessor :metodosAgregados, :bloqueMetodos,  :nombre, :estrategia
+  attr_accessor :metodosAgregados, :bloqueMetodos,  :nombre
 
   def initialize
     self.metodosAgregados = Hash.new();
-
   end
 
 
   def agregarMetodos (&bloque)
 
-   self.bloqueMetodos=bloque;
+   self.bloqueMetodos=bloque
     instance_eval(&bloque)
   end
 
@@ -26,9 +23,7 @@ class Trait
 
   def agregarMethod (nombre,&bloque)
 
-
     setHash nombre
-
     self.metodosAgregados[nombre] << bloque;
 
   end
@@ -44,7 +39,6 @@ class Trait
       comportamientos.each {|comportamiento|
         traitAlQueCopio.agregarMethod nombre, &comportamiento
       }
-
     }
   end
 
@@ -65,7 +59,8 @@ class Trait
 
   def - (*metodos)
 
-    nuevoTrait = self.clone
+    nuevoTrait = Trait.new
+    copiarMetodos self , nuevoTrait
 
     metodos.each {|metodo| borrarMetodo(metodo,nuevoTrait)}
 
@@ -87,5 +82,3 @@ class Trait
 
 
 end
-
-
