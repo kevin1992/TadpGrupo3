@@ -294,3 +294,75 @@ describe 'Estrategia por Funcion' do
   end
 
 end
+
+describe 'Test de Pablo' do
+
+  it 'estoy probando parametros, acceso al estado interno y retorno' do
+    # esto sería un "test de integración" (testeo que todas sus partes se comuniquen y funcionen correctamente)
+    # pero ustedes tienen que hacer tests para cada parte así pueden individualizar los problemas
+    # (ver test siguiente como ejemplo de test unitario)
+
+    CreadorTrait.definirTrait 'TraitA' do
+
+      agregarMethod :m1 do |parametro|
+        @otro1 = 4
+        @primero = parametro
+        123
+      end
+
+    end
+
+    CreadorTrait.definirTrait 'TraitB' do
+
+      agregarMethod :m1 do |parametro|
+        @otro2 = 5
+        @segundo = parametro
+        456
+      end
+
+    end
+
+    class Usuario
+      attr_accessor :primero, :segundo, :otro1, :otro2
+      uses (TraitA + TraitB), EstrategiaTodosLosMensajes.new
+    end
+
+    usuario = Usuario.new
+    usuario.primero.nil?.should == true
+    usuario.segundo.nil?.should == true
+
+    usuario.m1(55).should == 456
+
+    usuario.otro1.should == 4
+    usuario.otro2.should == 5
+
+    usuario.primero.should == 55
+    usuario.segundo.should == 55
+  end
+
+  it 'puedo sumar dos traits' do
+    a_m1 = proc {}
+    b_m1 = proc {}
+    b_m2 = proc {}
+
+    CreadorTrait.definirTrait 'TraitA' do
+      agregarMethod :m1, &a_m1
+    end
+
+    CreadorTrait.definirTrait 'TraitB' do
+      agregarMethod :m1, &b_m1
+      agregarMethod :m2, &b_m2
+    end
+
+    resultado = TraitA + TraitB
+    resultado.metodosAgregados.size.should == 2
+
+    resultado.metodosAgregados[:m1].size.should == 2
+    resultado.metodosAgregados[:m1][0].should == a_m1
+    resultado.metodosAgregados[:m1][1].should == b_m1
+
+    resultado.metodosAgregados[:m2].size.should == 1
+    resultado.metodosAgregados[:m2][0].should == b_m2
+  end
+
+end
