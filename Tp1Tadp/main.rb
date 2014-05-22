@@ -5,15 +5,15 @@ require_relative 'framework'
 
 
 
-CreadorTrait.definirTrait('MiTrait') do
+Trait.define('MiTrait') do
 
-  agregarMethod :saludar do
+  method :saludar do
 
     'Hola! ' + self.nombresss
   end
 
 
-  agregarMethod :chau do |num|
+  method :chau do |num|
    5+ num
   end
 
@@ -21,13 +21,13 @@ CreadorTrait.definirTrait('MiTrait') do
 
 end
 
-CreadorTrait.definirTrait('MiOtroTrait') do
+Trait.define('MiOtroTrait') do
 
-  agregarMethod :saltar do |num|
+  method :saltar do |num|
    puts 'Salto ' + num.to_s + ' Metros'
   end
 
-  agregarMethod :chau do |num|
+  method :chau do |num|
     7+ num
   end
 
