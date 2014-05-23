@@ -6,6 +6,14 @@ class TraitImplem
     self.metodos_agregados = Hash.new
   end
 
+  def self.definirTrait(nombre,&bloque_metodos)
+
+    nuevo_trait = Object.const_set(nombre,TraitImplem.new)
+    nuevo_trait.nombre = nombre
+    nuevo_trait.agregar_metodos &bloque_metodos
+
+  end
+
 
   def agregar_metodos (&bloque)
 

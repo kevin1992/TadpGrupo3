@@ -1,33 +1,26 @@
 require_relative 'framework'
 
+TraitImplem.definirTrait('MiTrait') do
 
+  method :saludar do
 
-
-
-
-CreadorTrait.definirTrait('MiTrait') do
-
-  agregarMethod :saludar do
-
-    'Hola! ' + self.nombresss
+    'Hola! ' + self.nombre
   end
 
 
-  agregarMethod :chau do |num|
+  method :chau do |num|
    5+ num
   end
 
-
-
 end
 
-CreadorTrait.definirTrait('MiOtroTrait') do
+TraitImplem.definirTrait('MiOtroTrait') do
 
-  agregarMethod :saltar do |num|
+  method :saltar do |num|
    puts 'Salto ' + num.to_s + ' Metros'
   end
 
-  agregarMethod :chau do |num|
+  method :chau do |num|
     7+ num
   end
 
