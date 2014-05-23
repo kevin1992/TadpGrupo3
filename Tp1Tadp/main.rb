@@ -1,11 +1,15 @@
 require_relative 'framework'
 
 
-Trait.definirTrait('MiTrait') do
+
+
+
+
+CreadorTrait.definirTrait('MiTrait') do
 
   agregarMethod :saludar do
 
-    'Hola! ' + self.nombre
+    'Hola! ' + self.nombresss
   end
 
 
@@ -17,7 +21,7 @@ Trait.definirTrait('MiTrait') do
 
 end
 
-Trait.definirTrait('MiOtroTrait') do
+CreadorTrait.definirTrait('MiOtroTrait') do
 
   agregarMethod :saltar do |num|
    puts 'Salto ' + num.to_s + ' Metros'
@@ -31,16 +35,8 @@ Trait.definirTrait('MiOtroTrait') do
 end
 
 
-Trait.definirTrait('TraitFacu') do
-
-  agregarMethod :saludarFacu do
-    puts 'Hola Facu'
-  end
-end
-
-
 class PersonaSuma2Traits
-  uses MiTrait + MiOtroTrait + TraitFacu, EstrategiaTodosLosMensajes.new()
+  uses MiTrait + MiOtroTrait , EstrategiaPorCorte.new() {|resultado| resultado>11}
 
   attr_accessor :nombre
   def initialize(nombre)
@@ -53,5 +49,5 @@ p= PersonaSuma2Traits.new("kevin")
 p.saltar(5)
 puts p.saludar()
 puts p.chau(2)
-p.saludarFacu
+
 

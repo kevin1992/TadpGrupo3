@@ -2,17 +2,10 @@ class Trait
 
   attr_accessor :metodosAgregados, :bloqueMetodos,  :nombre
 
-  def self.definirTrait(nombre,&bloqueMetodos)
-
-    nuevoTrait = Object.const_set(nombre,Trait.new)
-    nuevoTrait.nombre = nombre
-    nuevoTrait.agregarMetodos &bloqueMetodos
-    #nuevoTrait.estrategia = estrategia
-  end
-
   def initialize
     self.metodosAgregados = Hash.new();
   end
+
 
   def agregarMetodos (&bloque)
 
