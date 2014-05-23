@@ -7,23 +7,23 @@ class Object
   def uses (trait, estrategia=EstrategiaExcepcion.new)
 
       trait.metodos_agregados.each do
-      |metodo|
-        self.nuevo_metodo metodo , estrategia
+      |nombre, bloques|
+        self.nuevo_metodo nombre, bloques, estrategia
       end
 
   end
 
 
-  def nuevo_metodo(metodo, estrategia)
+  def nuevo_metodo(nombre, bloques, estrategia)
     # metodo[1] es el array con todos los bloques de comportamiento del metodo
 
-   if hay_conflicto metodo[1]
-   metodo_resuelto = estrategia.resolver(metodo)
+   if hay_conflicto bloques
+   metodo_resuelto = estrategia.resolver(nombre,bloques)
     else
-      metodo_resuelto = metodo[1][0]
+      metodo_resuelto = bloques.first
     end
 
-      define_method metodo[0], metodo_resuelto
+      define_method nombre, metodo_resuelto
 
     end
 

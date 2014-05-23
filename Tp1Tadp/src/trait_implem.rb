@@ -1,6 +1,6 @@
 class TraitImplem
 
-  attr_accessor :metodos_agregados, :bloqueMetodos,  :nombre
+  attr_accessor :metodos_agregados, :nombre
 
   def initialize
     self.metodos_agregados = Hash.new
@@ -17,13 +17,13 @@ class TraitImplem
 
   def agregar_metodos (&bloque)
 
-   self.bloqueMetodos=bloque
     instance_eval(&bloque)
   end
 
   def set_hash nombre
 
     if self.metodos_agregados[nombre].nil?
+
       self.metodos_agregados[nombre] = []
     end
 
@@ -41,8 +41,8 @@ class TraitImplem
     trait.metodos_agregados.delete(nombre_metodo)
   end
 
-  def copiar_metodos trait , trait_al_que_copio
-    trait.metodos_agregados.each { |nombre,comportamientos|
+  def copiar_metodos trait_al_que_copio
+    self.metodos_agregados.each { |nombre,comportamientos|
 
       comportamientos.each {|comportamiento|
         trait_al_que_copio.method nombre, &comportamiento
@@ -56,11 +56,10 @@ class TraitImplem
 
        nuevoTrait = TraitImplem.new
 
-      copiar_metodos self , nuevoTrait
-      copiar_metodos otroTrait , nuevoTrait
+       self.copiar_metodos nuevoTrait
+       otroTrait.copiar_metodos nuevoTrait
 
-
-    nuevoTrait
+      nuevoTrait
 
   end
 
@@ -68,7 +67,8 @@ class TraitImplem
   def - (*metodos)
 
     nuevoTrait = TraitImplem.new
-    copiar_metodos self , nuevoTrait
+
+    self.copiar_metodos nuevoTrait
 
     metodos.each {|metodo| borrar_metodo(metodo,nuevoTrait)}
 
@@ -80,7 +80,7 @@ class TraitImplem
 
     nuevoTrait = TraitImplem.new
 
-    copiar_metodos self , nuevoTrait
+    self.copiar_metodos nuevoTrait
 
     nuevoTrait.metodos_agregados[nuevoNombreMetodoOriginal] =  nuevoTrait.metodos_agregados[nombreMetodoOriginal]
 

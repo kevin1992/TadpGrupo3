@@ -3,11 +3,11 @@ class TraitConditionalEval < TraitImplementationError; end
 
 class EstrategiaTodosLosMensajes
 
-  def resolver(metodo)
+  def resolver(nombre, bloques)
 
     #Arma un Proc que ejecuta todos los comportamientos y devuelve el ultimo
 
-    comportamientos = metodo[1]
+    comportamientos = bloques
 
     lambda do |*args|
       for i in 0..comportamientos.size-2
@@ -24,9 +24,7 @@ end
 
 class EstrategiaExcepcion
 
-  def resolver(metodo)
-
-    nombre = metodo[0]
+  def resolver(nombre,bloques)
 
     lambda { raise TraitImplementationError, 'Conflicto con el metodo '+ nombre.to_s.upcase }
 
@@ -43,9 +41,9 @@ class EstrategiaPorFuncion
   end
 
 
-  def resolver(metodo)
+  def resolver(nombre, bloques)
 
-    comportamientos = metodo[1]
+    comportamientos = bloques
     funcion = self.funcion
 
     lambda { |*args|
@@ -72,9 +70,9 @@ class EstrategiaPorCorte
   end
 
 
-  def resolver(metodo)
+  def resolver(nombre, bloques)
 
-    comportamientos = metodo[1]
+    comportamientos = bloques
     condicion = self.condicion
 
     lambda { |*args|
@@ -91,7 +89,7 @@ class EstrategiaPorCorte
 
       }
 
-      raise TraitConditionalEval, "Ninguna implementacion de :#{metodo[0].to_s} cumple con la condicion "
+      raise TraitConditionalEval, "Ninguna implementacion de :#{nombre.to_s} cumple con la condicion "
 
     }
 
