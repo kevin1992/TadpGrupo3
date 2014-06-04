@@ -1,84 +1,49 @@
 class Trait
 
-  attr_accessor :metodosAgregados, :bloqueMetodos,  :nombre
+  attr_accessor :metodos
 
-  def initialize
-    self.metodosAgregados = Hash.new();
+  def self.define(nombre, &bloque_metodos)
+    nuevo_trait = Trait.new
+    nuevo_trait.agregar_metodos &bloque_metodos
+    Object.const_set(nombre, nuevo_trait)
+    nuevo_trait
   end
 
+  def initialize(metodos = Hash.new { [] } )
+    # Hash.new { <default value> } hace que cuando le pidan un elemento que no existe evalúe el bloque y retorne su respuesta
+    self.metodos = metodos
+  end
 
-  def agregarMetodos (&bloque)
-
-   self.bloqueMetodos=bloque
+  def agregar_metodos(&bloque)
     instance_eval(&bloque)
   end
 
-  def setHash nombre
-
-    if self.metodosAgregados[nombre].nil?
-      self.metodosAgregados[nombre] = []
-    end
-
+  def method(nombre, &bloque)
+    self.metodos[nombre] = self.metodos[nombre] << bloque
   end
 
-  def agregarMethod (nombre,&bloque)
-
-    setHash nombre
-    self.metodosAgregados[nombre] << bloque;
-
-  end
-
-
-  def borrarMetodo nombreMetodo, trait
-    trait.metodosAgregados.delete(nombreMetodo)
-  end
-
-  def copiarMetodos trait , traitAlQueCopio
-    trait.metodosAgregados.each { |nombre,comportamientos|
-
-      comportamientos.each {|comportamiento|
-        traitAlQueCopio.agregarMethod nombre, &comportamiento
-      }
+  def borrar_metodos(*nombre_metodos)
+    nombre_metodos.each { |nombre_metodo|
+      self.metodos.delete(nombre_metodo)
     }
   end
 
-
-
-  def + (otroTrait)
-
-       nuevoTrait = Trait.new
-
-      copiarMetodos self , nuevoTrait
-      copiarMetodos otroTrait , nuevoTrait
-
-
-    nuevoTrait
-
+  def clone
+    Trait.new(self.metodos.clone)
   end
 
-
-  def - (*metodos)
-
-    nuevoTrait = Trait.new
-    copiarMetodos self , nuevoTrait
-
-    metodos.each {|metodo| borrarMetodo(metodo,nuevoTrait)}
-
-    nuevoTrait
-
+  def +(otroTrait)
+    # TODO
   end
 
-  def << (nombreMetodoOriginal , nuevoNombreMetodoOriginal)
-
-    nuevoTrait = Trait.new
-
-    copiarMetodos self , nuevoTrait
-
-    nuevoTrait.metodosAgregados[nuevoNombreMetodoOriginal] =  nuevoTrait.metodosAgregados[nombreMetodoOriginal]
-
-    nuevoTrait
-
+  def -(*metodos)
+    nuevo_trait = self.clone
+    nuevo_trait.borrar_metodos(*metodos)
+    nuevo_trait
   end
 
+  def <<(nombre, nuevo_nombre)
+    # TODO
+  end
 
 end

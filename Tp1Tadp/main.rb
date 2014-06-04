@@ -9,7 +9,7 @@ TraitImplem.definirTrait('MiTrait') do
 
 
   method :chau do |num|
-   5+ num
+    5+ num
   end
 
 end
@@ -17,7 +17,7 @@ end
 TraitImplem.definirTrait('MiOtroTrait') do
 
   method :saltar do |num|
-   puts 'Salto ' + num.to_s + ' Metros'
+    puts 'Salto ' + num.to_s + ' Metros'
   end
 
   method :chau do |num|
@@ -29,9 +29,10 @@ end
 
 
 class PersonaSuma2Traits
-  uses MiTrait + MiOtroTrait , EstrategiaPorCorte.new() {|resultado| resultado>11}
+  uses MiTrait + MiOtroTrait, EstrategiaPorCorte.new() { |resultado| resultado>11 }
 
   attr_accessor :nombre
+
   def initialize(nombre)
     self.nombre = nombre
   end

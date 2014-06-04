@@ -1,10 +1,10 @@
 require 'rspec'
-require_relative '../framework'
-
+require_relative '../src/framework'
+require_relative '../src/trait'
 
 describe 'Algebra' do
 
-  Trait.define 'MiTrait' do
+  TraitImplem.definirTrait 'MiTrait' do
     method :metodo1 do
       'hola'
     end
@@ -13,7 +13,7 @@ describe 'Algebra' do
     end
   end
 
-  Trait.define 'MiOtroTrait' do
+  TraitImplem.definirTrait 'MiOtroTrait' do
     method :metodo1 do
       'kawuabonga'
     end
@@ -29,7 +29,7 @@ describe 'Algebra' do
       uses (MiTrait - :metodo2) + (MiOtroTrait - :metodo1), EstrategiaExcepcion.new
     end
     o = TodoBienTodoLegal.new
-    expect{
+    expect {
       o.metodo2(84)
     }.to raise_error NoMethodError
     o.metodo3.should == 'mundo'
@@ -45,7 +45,7 @@ describe 'Algebra' do
     o = TodoBienTodoLegal.new
     o.metodo2(84).should == 42
     o.metodo3.should == 'mundo'
-    expect{
+    expect {
       o.metodo1
     }.to raise_error TraitImplementationError
 
@@ -65,7 +65,7 @@ describe 'Algebra' do
 
   it 'componer traits con otros traits' do
 
-    Trait.define 'TraitComp' do
+    TraitImplem.definirTrait 'TraitComp' do
       uses MiTrait, EstrategiaExcepcion.new
     end
 
@@ -84,7 +84,7 @@ end
 describe 'Estrategia Todos los Mensajes' do
 
   it 'puedo consultar self' do
-    Trait.define 'MiTrait' do
+    TraitImplem.definirTrait 'MiTrait' do
 
       method :algo do
         self
@@ -100,7 +100,7 @@ describe 'Estrategia Todos los Mensajes' do
 
   it 'se ejecutan todos los metodos conflictivos y accede al attr de la clase' do
 
-    Trait.define 'MiTrait' do
+    TraitImplem.definirTrait 'MiTrait' do
 
       method :edad_nueva do
         self.edad = self.edad + 20
@@ -108,10 +108,10 @@ describe 'Estrategia Todos los Mensajes' do
 
     end
 
-    Trait.define 'MiOtroTrait' do
+    TraitImplem.definirTrait 'MiOtroTrait' do
 
       method :edad_nueva do
-        self.edad  = self.edad + 10
+        self.edad = self.edad + 10
       end
 
     end
@@ -119,6 +119,7 @@ describe 'Estrategia Todos los Mensajes' do
     class Persona
       uses (MiTrait + MiOtroTrait), EstrategiaTodosLosMensajes.new
       attr_accessor :edad
+
       def initialize(n)
         self.edad = n
       end
@@ -133,32 +134,32 @@ end
 
 describe 'Estrategia por Corte' do
 
-  Trait.define 'Trait1' do
+  TraitImplem.definirTrait 'Trait1' do
     method :nombresss do
       'Kevin'
     end
   end
 
-  Trait.define 'Trait2' do
+  TraitImplem.definirTrait 'Trait2' do
     method :nombresss do
       'Facundo'
     end
   end
 
-  Trait.define 'Trait3' do
+  TraitImplem.definirTrait 'Trait3' do
 
     method :nombresss do
       'Cristian'
     end
   end
 
-  Trait.define 'Trait4' do
+  TraitImplem.definirTrait 'Trait4' do
     method :nombresss do
       'Maxi'
     end
   end
 
-  Trait.define 'Trait5' do
+  TraitImplem.definirTrait 'Trait5' do
     method :nombresss do
       'Jony'
     end
@@ -168,7 +169,7 @@ describe 'Estrategia por Corte' do
   it 'devuelve Kevin por ser el mayor mas proximo a J' do
 
     class Nombres
-      uses (Trait1 + Trait2 + Trait3 + Trait4 + Trait5), EstrategiaPorCorte.new {|elem| elem>'J' }
+      uses (Trait1 + Trait2 + Trait3 + Trait4 + Trait5), EstrategiaPorCorte.new { |elem| elem>'J' }
     end
 
     prueba_corte = Nombres.new
@@ -178,49 +179,49 @@ describe 'Estrategia por Corte' do
 
   it 'recibe parametros el metodo y funciona' do
 
-    Trait.define 'Trait01' do
+    TraitImplem.definirTrait 'Trait01' do
       method :numero do |num|
         5 + num
       end
+    end
+
+
+    TraitImplem.definirTrait 'Trait02' do
+      method :numero do |num|
+        10 + num
       end
+    end
 
 
-      Trait.define 'Trait02' do
-        method :numero do |num|
-          10 + num
-        end
-        end
+    class Persona2
+      uses Trait01+Trait02, EstrategiaPorCorte.new { |result| result>15 }
+    end
+
+    p = Persona2.new
+
+    p.numero(6).should==16
 
 
-        class Persona2
-          uses Trait01+Trait02 , EstrategiaPorCorte.new {|result| result>15}
-        end
-
-        p = Persona2.new
-
-        p.numero(6).should==16
-
-
-end
+  end
 
 end
 
 
 describe 'Estrategia por Funcion' do
 
-  Trait.define 'TFuncion1' do
+  TraitImplem.definirTrait 'TFuncion1' do
     method :numero_x do
       2
     end
   end
 
-  Trait.define 'TFuncion2' do
+  TraitImplem.definirTrait 'TFuncion2' do
     method :numero_x do
       3
     end
   end
 
-  Trait.define 'TFuncion3' do
+  TraitImplem.definirTrait 'TFuncion3' do
     method :numero_x do
       4
     end
@@ -228,12 +229,12 @@ describe 'Estrategia por Funcion' do
 
   it 'devuelve la multiplicacion del retorno de cada metodo conflictivo' do
 
-  class Numeros
-    uses (TFuncion1 + TFuncion2 + TFuncion3), EstrategiaPorFuncion.new {|x, y| x*y }
-  end
+    class Numeros
+      uses (TFuncion1 + TFuncion2 + TFuncion3), EstrategiaPorFuncion.new { |x, y| x*y }
+    end
 
-  prueba_funcion = Numeros.new
-  prueba_funcion.numero_x.should == 24
+    prueba_funcion = Numeros.new
+    prueba_funcion.numero_x.should == 24
 
   end
 
@@ -242,13 +243,13 @@ describe 'Estrategia por Funcion' do
     b = a
     a.should == [1]
     b << 2
-    b.should == [1,2]
+    b.should == [1, 2]
 
-    a.should == [1,2]
+    a.should == [1, 2]
 
   end
 
-  it  'puedo definir un metodo'  do
+  it 'puedo definir un metodo' do
 
     clase = Class.new {
       def nombre
@@ -256,8 +257,8 @@ describe 'Estrategia por Funcion' do
       end
 
     }
-    clase.send(:define_method, :algo){
-        self.nombre
+    clase.send(:define_method, :algo) {
+      self.nombre
     }
 
     instancia = clase.new
@@ -355,14 +356,14 @@ describe 'Test de Pablo' do
     end
 
     resultado = TraitA + TraitB
-    resultado.metodos_agregados.size.should == 2
+    resultado.metodos.size.should == 2
 
-    resultado.metodos_agregados[:m1].size.should == 2
-    resultado.metodos_agregados[:m1][0].should == a_m1
-    resultado.metodos_agregados[:m1][1].should == b_m1
+    resultado.metodos[:m1].size.should == 2
+    resultado.metodos[:m1][0].should == a_m1
+    resultado.metodos[:m1][1].should == b_m1
 
-    resultado.metodos_agregados[:m2].size.should == 1
-    resultado.metodos_agregados[:m2][0].should == b_m2
+    resultado.metodos[:m2].size.should == 1
+    resultado.metodos[:m2][0].should == b_m2
   end
 
 end
