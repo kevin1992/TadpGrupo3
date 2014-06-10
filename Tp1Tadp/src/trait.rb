@@ -32,8 +32,19 @@ class Trait
     Trait.new(self.metodos.clone)
   end
 
-  def +(otroTrait)
-    # TODO
+  def +(otro)
+    nuevo = self.clone
+
+    otro.metodos.each_key {
+        |k|
+      if nuevo.metodos.has_key?(k)
+        otro.metodos[k].each { |m| nuevo.metodos[k] << m }
+      else
+        nuevo.metodos[k] = otro.metodos[k]
+      end
+    }
+
+    nuevo
   end
 
   def -(*metodos)
@@ -43,7 +54,8 @@ class Trait
   end
 
   def <<(nombre, nuevo_nombre)
-    # TODO
+    self.metodos[nuevo_nombre] = self.metodos[nombre]
+    self
   end
 
 end

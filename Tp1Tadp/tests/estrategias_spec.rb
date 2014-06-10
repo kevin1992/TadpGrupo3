@@ -1,4 +1,5 @@
 require 'rspec'
+require_relative '../src/estategias'
 
 describe 'Estrategias Todos Los mensajes' do
 
@@ -15,7 +16,7 @@ describe 'Estrategias Todos Los mensajes' do
     end
   end
 
-  it 'puede usar métodos con parámetros' do
+  it 'puede usar metodos con parametros' do
     m1 = lambda { |un_parametro, otro_parametro|
       "algo"
     }
@@ -30,7 +31,7 @@ describe 'Estrategias Todos Los mensajes' do
     A.new.metodo(1, 2).should == 3
   end
 
-  it 'ejecuta todos los métodos en orden' do
+  it 'ejecuta todos los metodos en orden' do
     orden = []
 
     m1 = lambda {
@@ -48,7 +49,7 @@ describe 'Estrategias Todos Los mensajes' do
     orden.should == ["m1", "m2"]
   end
 
-  it 'retorna el resultado del último método' do
+  it 'retorna el resultado del ultimo metodo' do
     m1 = lambda {
       "m1"
     }
@@ -64,7 +65,7 @@ describe 'Estrategias Todos Los mensajes' do
     A.new.metodo.should == "m2"
   end
 
-  it 'puede usar variables de instancia y métodos' do
+  it 'puede usar variables de instancia y metodos' do
     m1 = lambda {
       @uno = 123
     }
@@ -88,10 +89,44 @@ describe 'Estrategias Todos Los mensajes' do
 
 end
 
-describe 'Estrategias XXXXX' do
+describe 'Estrategia Por Corte' do
 
-  it 'should do something' do
-    true.should == false
+  m5 = lambda{5}
+  m7 = lambda{7}
+  m12 = lambda{12}
+  m15 = lambda{15}
+
+  it 'ejecuta el 1er metodo que devuelve lo especificado' do
+    estrategia = EstrategiaPorCorte.new {|n| n > 10}
+    r = estrategia.resolver('mets', [m5,m7,m12,m15])
+
+    class N; end
+    N.send(:define_method, 'm', r)
+
+    N.new.m.should == 12
+
   end
 
+  it 'tira excepcion si ninguno cumple' do
+
+    estrategia = EstrategiaPorCorte.new {|n| n > 15}
+    r = estrategia.resolver('mets', [m5,m7,m12,m15])
+    class N; end
+    N.send(:define_method, 'metodo', r)
+
+    expect {
+      N.new.metodo
+    }.to raise_error TraitConditionalEval
+
+  end
+
+end
+
+describe 'Estrategia Por Funcion' do
+
+  strg = EstrategiaPorFuncion.new { |x, y| x*y }
+
+  it '' do
+
+  end
 end

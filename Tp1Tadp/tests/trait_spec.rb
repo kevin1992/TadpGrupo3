@@ -2,9 +2,10 @@ require 'rspec'
 require_relative '../src/framework'
 require_relative '../src/trait'
 
+
 describe 'Algebra' do
 
-  TraitImplem.definirTrait 'MiTrait' do
+  Trait.define 'MiTrait' do
     method :metodo1 do
       'hola'
     end
@@ -13,7 +14,7 @@ describe 'Algebra' do
     end
   end
 
-  TraitImplem.definirTrait 'MiOtroTrait' do
+  Trait.define 'MiOtroTrait' do
     method :metodo1 do
       'kawuabonga'
     end
@@ -40,7 +41,7 @@ describe 'Algebra' do
   it 'prueba la suma' do
 
     class TodoBienTodoLegal
-      uses (MiTrait + MiOtroTrait), EstrategiaExcepcion.new
+      uses (MiTrait + MiOtroTrait)
     end
     o = TodoBienTodoLegal.new
     o.metodo2(84).should == 42
@@ -53,10 +54,20 @@ describe 'Algebra' do
 
   it 'renombra selectores' do
 
+    Trait.define 'TraitAlias' do
+      method :metodo1 do
+        'hola'
+      end
+      method :metodo2 do |un_numero|
+        un_numero * 0 + 42
+      end
+    end
+
     class ConAlias
-      uses (MiTrait.<< :metodo1, :saludo), EstrategiaExcepcion.new
+      uses (TraitAlias.<< :metodo1, :saludo), EstrategiaExcepcion.new
     end
     o = ConAlias.new
+    TraitAlias.metodos[:saludo].size.should == 1
     o.saludo.should == 'hola'
     o.metodo1.should == 'hola'
     o.metodo2(84).should == 42
@@ -65,7 +76,7 @@ describe 'Algebra' do
 
   it 'componer traits con otros traits' do
 
-    TraitImplem.definirTrait 'TraitComp' do
+    Trait.define 'TraitComp' do
       uses MiTrait, EstrategiaExcepcion.new
     end
 
@@ -84,7 +95,7 @@ end
 describe 'Estrategia Todos los Mensajes' do
 
   it 'puedo consultar self' do
-    TraitImplem.definirTrait 'MiTrait' do
+    Trait.define 'MiTrait' do
 
       method :algo do
         self
@@ -100,7 +111,7 @@ describe 'Estrategia Todos los Mensajes' do
 
   it 'se ejecutan todos los metodos conflictivos y accede al attr de la clase' do
 
-    TraitImplem.definirTrait 'MiTrait' do
+    Trait.define 'MiTrait' do
 
       method :edad_nueva do
         self.edad = self.edad + 20
@@ -108,7 +119,7 @@ describe 'Estrategia Todos los Mensajes' do
 
     end
 
-    TraitImplem.definirTrait 'MiOtroTrait' do
+    Trait.define 'MiOtroTrait' do
 
       method :edad_nueva do
         self.edad = self.edad + 10
@@ -134,33 +145,33 @@ end
 
 describe 'Estrategia por Corte' do
 
-  TraitImplem.definirTrait 'Trait1' do
-    method :nombresss do
+  Trait.define 'Trait1' do
+    method :nombre do
       'Kevin'
     end
   end
 
-  TraitImplem.definirTrait 'Trait2' do
-    method :nombresss do
+  Trait.define 'Trait2' do
+    method :nombre do
       'Facundo'
     end
   end
 
-  TraitImplem.definirTrait 'Trait3' do
+  Trait.define 'Trait3' do
 
-    method :nombresss do
+    method :nombre do
       'Cristian'
     end
   end
 
-  TraitImplem.definirTrait 'Trait4' do
-    method :nombresss do
+  Trait.define 'Trait4' do
+    method :nombre do
       'Maxi'
     end
   end
 
-  TraitImplem.definirTrait 'Trait5' do
-    method :nombresss do
+  Trait.define 'Trait5' do
+    method :nombre do
       'Jony'
     end
 
@@ -173,20 +184,20 @@ describe 'Estrategia por Corte' do
     end
 
     prueba_corte = Nombres.new
-    puts prueba_corte.nombresss.should == 'Kevin'
+    puts prueba_corte.nombre.should == 'Kevin'
 
   end
 
   it 'recibe parametros el metodo y funciona' do
 
-    TraitImplem.definirTrait 'Trait01' do
+    Trait.define 'Trait01' do
       method :numero do |num|
         5 + num
       end
     end
 
 
-    TraitImplem.definirTrait 'Trait02' do
+    Trait.define 'Trait02' do
       method :numero do |num|
         10 + num
       end
@@ -209,19 +220,19 @@ end
 
 describe 'Estrategia por Funcion' do
 
-  TraitImplem.definirTrait 'TFuncion1' do
+  Trait.define 'TFuncion1' do
     method :numero_x do
       2
     end
   end
 
-  TraitImplem.definirTrait 'TFuncion2' do
+  Trait.define 'TFuncion2' do
     method :numero_x do
       3
     end
   end
 
-  TraitImplem.definirTrait 'TFuncion3' do
+  Trait.define 'TFuncion3' do
     method :numero_x do
       4
     end
@@ -268,13 +279,13 @@ describe 'Estrategia por Funcion' do
   it 'call a un bloque y self' do
 
     class A
-      def nombresss
+      def nombre
         'jose'
       end
 
       def dame_bloque
         proc {
-          self.nombresss
+          self.nombre
         }
       end
     end
@@ -290,7 +301,7 @@ describe 'Estrategia por Funcion' do
     end
 
     una_instancia_de_a = A.new
-    B.new.ejecutar(una_instancia_de_a).should == una_instancia_de_a
+    B.new.ejecutar(una_instancia_de_a).should == 'jose'
 
   end
 
