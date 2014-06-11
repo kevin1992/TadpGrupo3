@@ -7,7 +7,8 @@ class Object
 
   def uses (trait)
 
-    @@trait = trait;
+    
+	@@trait = trait;
 
   end
 
