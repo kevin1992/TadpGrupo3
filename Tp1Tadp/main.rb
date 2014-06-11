@@ -3,13 +3,12 @@ require_relative 'framework'
 TraitImplem.definirTrait('MiTrait') do
 
   method :saludar do
-
     'Hola! ' + self.nombre
   end
 
 
   method :chau do |num|
-    5+ num
+   self.valorEsperado + num
   end
 
 end
@@ -17,7 +16,7 @@ end
 TraitImplem.definirTrait('MiOtroTrait') do
 
   method :saltar do |num|
-    puts 'Salto ' + num.to_s + ' Metros'
+   puts 'Salto ' + num.to_s + ' Metros'
   end
 
   method :chau do |num|
@@ -29,17 +28,22 @@ end
 
 
 class PersonaSuma2Traits
-  uses MiTrait + MiOtroTrait, EstrategiaPorCorte.new() { |resultado| resultado>11 }
+  attr_accessor :nombre, :valorEsperado
 
-  attr_accessor :nombre
+  uses  MiTrait + MiOtroTrait;
+ # uses MiTrait + MiOtroTrait , EstrategiaPorCorte.new() {|resultado| resultado > self.valorEsperado}
 
-  def initialize(nombre)
+  def initialize(nombre,estrategia)
+
     self.nombre = nombre
+    self.valorEsperado =11;
+    definirMetodos estrategia
+
   end
 
 end
 
-p= PersonaSuma2Traits.new("kevin")
+p= PersonaSuma2Traits.new("kevin", EstrategiaTodosLosMensajes.new())
 p.saltar(5)
 puts p.saludar()
 puts p.chau(2)

@@ -4,22 +4,30 @@ class TraitConditionalEval < TraitImplementationError; end
 class EstrategiaTodosLosMensajes
 
   def resolver(nombre, bloques)
-    #Arma un Proc que ejecuta todos los comportamientos y devuelve el ultimo
-    lambda do |*args|
-      for i in 0..bloques.size-2
-        instance_eval { bloques[i].call(*args) }
-      end
 
-      return instance_eval { bloques.last.call(*args) }
+    #Arma un Proc que ejecuta todos los comportamientos y devuelve el ultimo
+
+    comportamientos = bloques
+
+    lambda do |*args|
+      for i in 0..comportamientos.size-2
+        instance_exec *args,&comportamientos[i]
+
+      end
+      return instance_exec *args,&comportamientos.last
+
     end
+
   end
 
 end
 
 class EstrategiaExcepcion
 
-  def resolver(nombre, bloques)
-    lambda { raise TraitImplementationError, 'Conflicto con el metodo ' + nombre.to_s.upcase }
+  def resolver(nombre,bloques)
+
+    lambda { raise TraitImplementationError, 'Conflicto con el metodo '+ nombre.to_s.upcase }
+
   end
 
 end
@@ -32,17 +40,25 @@ class EstrategiaPorFuncion
     self.funcion = bloque
   end
 
+
   def resolver(nombre, bloques)
+
+    comportamientos = bloques
     funcion = self.funcion
 
     lambda { |*args|
-      resultados = bloques.map { |comportamiento| instance_eval { comportamiento.call(*args) } }
+
+      resultados = comportamientos.map { |comportamiento| instance_exec *args,&comportamiento }
+
       resultado_final = resultados[1..-1].inject(resultados[0]) { |result, elem| funcion.call(result, elem) }
-      resultado_final
-    }
+
+      resultado_final }
+
   end
 
 end
+
+
 
 
 class EstrategiaPorCorte
@@ -53,21 +69,32 @@ class EstrategiaPorCorte
     self.condicion = bloque
   end
 
+
   def resolver(nombre, bloques)
+
+    comportamientos = bloques
     condicion = self.condicion
 
     lambda { |*args|
-      bloques.each { |comportamiento|
 
-        resultado = instance_eval { comportamiento.call(*args) }
+      comportamientos.each {
 
-        if condicion.call(resultado)
+          |comportamiento|
+
+       # resultado = instance_eval { comportamiento.call(*args) }
+        resultado = instance_exec *args,&comportamiento
+
+        if instance_exec resultado,&condicion
           return resultado
         end
+
       }
 
       raise TraitConditionalEval, "Ninguna implementacion de :#{nombre.to_s} cumple con la condicion "
+
     }
+
   end
+
 
 end
