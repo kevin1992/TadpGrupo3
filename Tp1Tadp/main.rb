@@ -1,4 +1,4 @@
-require_relative 'framework'
+require_relative 'src/framework'
 
 TraitImplem.definirTrait('MiTrait') do
 

@@ -9,6 +9,7 @@ describe 'Estrategias Todos Los mensajes' do
     def initialize
       @uno = 1
       @dos = 2
+
     end
 
     def mas_uno(valor)
@@ -81,10 +82,10 @@ describe 'Estrategias Todos Los mensajes' do
     instancia = A.new
 
     instancia.uno.should == 1
-    instancia.uno.should == 2
+    instancia.dos.should == 2
     instancia.metodo
     instancia.uno.should == 123
-    instancia.uno.should == 3
+    instancia.dos.should == 3
   end
 
 end
@@ -124,9 +125,23 @@ end
 
 describe 'Estrategia Por Funcion' do
 
-  strg = EstrategiaPorFuncion.new { |x, y| x*y }
+  estrategia = EstrategiaPorFuncion.new { |x, y| x*y }
 
-  it '' do
+  it 'le mando 4 metodos que devuelven 1,2,3,4' do
+    m1 = lambda{1}
+    m2 = lambda{2}
+    m3 = lambda{3}
+    m4 = lambda{4}
+
+
+    r = estrategia.resolver('metodo', [m1,m2,m3,m4])
+
+    class N; end
+    N.send(:define_method, 'm', r)
+
+    N.new.m.should == 24
+
 
   end
+
 end
