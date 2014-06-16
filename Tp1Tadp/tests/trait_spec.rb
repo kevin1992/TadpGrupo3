@@ -32,12 +32,14 @@ describe 'Algebra' do
     class TodoBienTodoLegal
       uses (MiTrait - :metodo2) + (MiOtroTrait - :metodo1)
 
-      def initialize(estrategia)
-        definirMetodos estrategia
-      end
+      # def initialize(estrategia)
+      #   # los métodos no los debe definir el código del usuario!
+      #   # los usuarios de un trait no tienen que modificar sus constructores para poder aplicar traits a la clase
+      #   definirMetodos estrategia
+      # end
 
     end
-    o = TodoBienTodoLegal.new  EstrategiaExcepcion.new
+    o = TodoBienTodoLegal.new#  EstrategiaExcepcion.new
     expect {
       o.metodo2(84)
     }.to raise_error NoMethodError
@@ -53,12 +55,12 @@ describe 'Algebra' do
     class TodoBienTodoLegal
       uses (MiTrait + MiOtroTrait)
 
-      def initialize(estrategia)
-        definirMetodos estrategia
-      end
+      # def initialize(estrategia)
+      #   definirMetodos estrategia
+      # end
 
     end
-    o = TodoBienTodoLegal.new EstrategiaExcepcion.new
+    o = TodoBienTodoLegal.new# EstrategiaExcepcion.new
     o.metodo2(84).should == 42
     o.metodo3.should == 'mundo'
     expect {
@@ -81,12 +83,12 @@ describe 'Algebra' do
     class ConAlias
       uses (TraitAlias.<< :metodo1, :saludo)
 
-      def initialize(estrategia)
-        definirMetodos estrategia
-      end
+      # def initialize(estrategia)
+      #   definirMetodos estrategia
+      # end
 
     end
-    o = ConAlias.new  EstrategiaExcepcion.new
+    o = ConAlias.new # EstrategiaExcepcion.new
 
     o.saludo.should == o.metodo1
 
@@ -111,10 +113,10 @@ describe 'Estrategia Todos los Mensajes' do
 
     instancia = Class.new {
       uses MiTraitConSelf
-      def initialize(estrategia)
-        definirMetodos estrategia
-      end
-    }.new EstrategiaExcepcion.new
+      # def initialize(estrategia)
+      #   definirMetodos estrategia
+      # end
+    }.new #EstrategiaExcepcion.new
 
     instancia.algo.should == instancia
   end
@@ -138,17 +140,17 @@ describe 'Estrategia Todos los Mensajes' do
     end
 
     class Persona
-      uses (MiTrait2 + MiOtroTrait2)
+      uses (MiTrait2 + MiOtroTrait2), EstrategiaTodosLosMensajes.new
       attr_accessor :edad
 
-      def initialize(n,estrategia)
+      def initialize(n)#,estrategia)
         self.edad = n
-        definirMetodos estrategia
+        #definirMetodos estrategia
       end
 
     end
 
-    prueba_todos = Persona.new(20,EstrategiaTodosLosMensajes.new)
+    prueba_todos = Persona.new(20)#,EstrategiaTodosLosMensajes.new)
     prueba_todos.edad_nueva.should == 50
 
   end
@@ -195,13 +197,13 @@ describe 'Estrategia por Corte' do
   it 'devuelve Kevin por ser el mayor mas proximo a J' do
 
     class Nombres
-      uses (Trait1 + Trait2 + Trait3 + Trait4 + Trait5)
-      def initialize(estrategia)
-        definirMetodos estrategia
-      end
+      uses (Trait1 + Trait2 + Trait3 + Trait4 + Trait5), EstrategiaPorCorte.new { |elem| elem>'J' }
+      # def initialize(estrategia)
+      #   definirMetodos estrategia
+      # end
     end
 
-    prueba_corte = Nombres.new EstrategiaPorCorte.new { |elem| elem>'J' }
+    prueba_corte = Nombres.new #EstrategiaPorCorte.new { |elem| elem>'J' }
     prueba_corte.nombre.should == 'Kevin'
 
   end
@@ -223,13 +225,13 @@ describe 'Estrategia por Corte' do
 
 
     class Persona2
-      uses Trait01+Trait02
-      def initialize(estrategia)
-        definirMetodos estrategia
-      end
+      uses Trait01+Trait02,  EstrategiaPorCorte.new { |result| result>15 }
+      # def initialize(estrategia)
+      #   definirMetodos estrategia
+      # end
     end
 
-    p = Persona2.new EstrategiaPorCorte.new { |result| result>15 }
+    p = Persona2.new# EstrategiaPorCorte.new { |result| result>15 }
 
     p.numero(6).should==16
 
@@ -264,13 +266,13 @@ describe 'Estrategia por Funcion' do
   it 'devuelve la multiplicacion del retorno de cada metodo conflictivo' do
 
     class Numeros
-      uses (TFuncion1 + TFuncion2 + TFuncion3)
-      def initialize(estrategia)
-        definirMetodos estrategia
-      end
+      uses (TFuncion1 + TFuncion2 + TFuncion3), EstrategiaPorFuncion.new { |x, y| x*y }
+      # def initialize(estrategia)
+      #   definirMetodos estrategia
+      # end
     end
 
-    prueba_funcion = Numeros.new EstrategiaPorFuncion.new { |x, y| x*y }
+    prueba_funcion = Numeros.new #EstrategiaPorFuncion.new { |x, y| x*y }
     prueba_funcion.numero_x.should == 24
 
   end
@@ -310,13 +312,13 @@ describe 'Test de Pablo' do
 
     class Usuario
       attr_accessor :primero, :segundo, :otro1, :otro2
-      uses (TraitA + TraitB)
-      def initialize(estrategia)
-        definirMetodos estrategia
-      end
+      uses (TraitA + TraitB), EstrategiaTodosLosMensajes.new
+      # def initialize(estrategia)
+      #   definirMetodos estrategia
+      # end
     end
 
-    usuario = Usuario.new EstrategiaTodosLosMensajes.new
+    usuario = Usuario.new #EstrategiaTodosLosMensajes.new
     usuario.primero.nil?.should == true
     usuario.segundo.nil?.should == true
 
